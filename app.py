@@ -416,6 +416,11 @@ def render_claim_dialog(row: pd.Series) -> None:
     st.text_area("request_detail_view", value=request_text, height=220, disabled=True, label_visibility="collapsed")
 
 
+def select_with_all(column, label: str, values: list[str], key: str) -> str:
+    options = ["전체"] + values
+    return column.selectbox(label, options, index=0, key=key)
+
+
 inject_css()
 
 if "dialog_claim" not in st.session_state:
@@ -452,29 +457,24 @@ else:
     df = sample_dataframe()
 
 row1 = st.columns(6)
-brand = row1[0].multiselect("브랜드", sorted(df["brand"].dropna().astype(str).unique()))
-major = row1[1].multiselect("구분(대)", sorted(df["major"].dropna().astype(str).unique()))
-mid = row1[2].multiselect("구분(중)", sorted(df["mid"].dropna().astype(str).unique()))
-cause = row1[3].multiselect("원인", sorted(df["cause"].dropna().astype(str).unique()))
-claim_type = row1[4].multiselect("유형", sorted(df["type"].dropna().astype(str).unique()))
-year = row1[5].multiselect("년도", sorted(df["year"].dropna().astype(str).unique()))
+brand = select_with_all(row1[0], "브랜드", sorted(df["brand"].dropna().astype(str).unique()), "brand_filter")
+major = select_with_all(row1[1], "구분(대)", sorted(df["major"].dropna().astype(str).unique()), "major_filter")
+mid = select_with_all(row1[2], "구분(중)", sorted(df["mid"].dropna().astype(str).unique()), "mid_filter")
+cause = select_with_all(row1[3], "원인", sorted(df["cause"].dropna().astype(str).unique()), "cause_filter")
+claim_type = select_with_all(row1[4], "유형", sorted(df["type"].dropna().astype(str).unique()), "type_filter")
+year = select_with_all(row1[5], "년도", sorted(df["year"].dropna().astype(str).unique()), "year_filter")
 
 row2 = st.columns([1, 1, 4])
-month = row2[0].multiselect("월", sorted(df["month"].dropna().astype(str).unique()))
-day = row2[1].multiselect("일", sorted(df["day"].dropna().astype(str).unique()))
-query = row2[2].text_input("검색", placeholder="접수번호, 모델, 하자상세, 고객명 검색")
+month = select_with_all(row2[0], "월", sorted(df["month"].dropna().astype(str).unique()), "month_filter")
+day = select_with_all(row2[1], "일", sorted(df["day"].dropna().astype(str).unique()), "day_filter")
+query = row2[2].text_input("검색", placeholder="접수번호, 모델, 하자상세, 고객명 검색", key="query_filter")
 st.markdown("</div>", unsafe_allow_html=True)
 
 if reset_clicked:
-    brand = []
-    major = []
-    mid = []
-    cause = []
-    claim_type = []
-    year = []
-    month = []
-    day = []
-    query = ""
+    for key in ["brand_filter", "major_filter", "mid_filter", "cause_filter", "type_filter", "year_filter", "month_filter", "day_filter"]:
+        st.session_state[key] = "전체"
+    st.session_state["query_filter"] = ""
+    st.rerun()
 
 filtered = df.copy()
 for column, selected in {
@@ -487,8 +487,8 @@ for column, selected in {
     "month": month,
     "day": day,
 }.items():
-    if selected:
-        filtered = filtered[filtered[column].astype(str).isin(selected)]
+    if selected != "전체":
+        filtered = filtered[filtered[column].astype(str) == str(selected)]
 
 if query:
     lowered = query.lower()
