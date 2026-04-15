@@ -13,6 +13,7 @@ st.set_page_config(page_title="고객클레임 현황 관리 대시보드", layo
 ALL = "전체"
 STATUS = ["접수", "분석중", "조치중", "완료", "보류"]
 ASSIGNEES = ["미배정", "김대리", "이과장", "박차장", "최부장"]
+BAR_COLORS = ["#2563eb", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6", "#06b6d4", "#84cc16", "#f97316"]
 
 HEADER_MAP = {
     "date": "date",
@@ -230,183 +231,71 @@ def inject_style() -> None:
     st.markdown(
         """
         <style>
-        .stApp {
-            background: linear-gradient(180deg, #f7faff 0%, #edf3fb 100%);
-        }
-        .block-container {
-            max-width: 1500px;
-            padding-top: 1.25rem;
-            padding-bottom: 2rem;
-        }
+        .stApp { background: linear-gradient(180deg, #f7faff 0%, #edf3fb 100%); }
+        .block-container { max-width: 1500px; padding-top: 1.25rem; padding-bottom: 2rem; }
         .hero-card {
             background: linear-gradient(135deg, #172033 0%, #243246 60%, #35465f 100%);
-            border-radius: 28px;
-            padding: 28px 32px;
-            color: white;
-            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
-            margin-bottom: 1.4rem;
+            border-radius: 28px; padding: 28px 32px; color: white;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16); margin-bottom: 1.4rem;
         }
         .hero-pill {
-            display: inline-block;
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.12);
-            font-size: 13px;
-            font-weight: 700;
+            display: inline-block; padding: 8px 14px; border-radius: 999px;
+            background: rgba(255,255,255,0.12); font-size: 13px; font-weight: 700;
         }
-        .hero-title {
-            font-size: 34px;
-            font-weight: 800;
-            margin: 18px 0 10px;
-            letter-spacing: -0.02em;
-        }
-        .hero-desc {
-            color: #dbe6f5;
-            font-size: 15px;
-            line-height: 1.7;
-            margin: 0;
-        }
+        .hero-title { font-size: 34px; font-weight: 800; margin: 18px 0 10px; letter-spacing: -0.02em; }
+        .hero-desc { color: #dbe6f5; font-size: 15px; line-height: 1.7; margin: 0; }
         .section-card, .kpi-card, .chart-card, .top-card, .table-card, .detail-card {
-            background: white;
-            border-radius: 28px;
-            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+            background: white; border-radius: 28px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
         }
-        .section-card {
-            padding: 18px 20px 10px;
-            margin-bottom: 1.2rem;
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #0f172a;
-        }
-        .section-desc {
-            font-size: 13px;
-            color: #64748b;
-            margin-top: 3px;
-        }
-        .kpi-card {
-            padding: 18px 18px 16px;
-            min-height: 142px;
-        }
-        .kpi-label {
-            color: #64748b;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        .kpi-value {
-            color: #0f172a;
-            font-size: 27px;
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-        }
-        .kpi-desc {
-            color: #64748b;
-            font-size: 12px;
-            margin-top: 6px;
-        }
+        .section-card { padding: 18px 20px 10px; margin-bottom: 1.2rem; }
+        .section-title { font-size: 18px; font-weight: 800; color: #0f172a; }
+        .section-desc { font-size: 13px; color: #64748b; margin-top: 3px; }
+        .kpi-card { padding: 18px 18px 16px; min-height: 142px; }
+        .kpi-label { color: #64748b; font-size: 14px; margin-bottom: 8px; }
+        .kpi-value { color: #0f172a; font-size: 27px; font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; }
+        .kpi-desc { color: #64748b; font-size: 12px; margin-top: 6px; }
         .trend-pill {
-            margin-top: 12px;
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #ef4444;
-            background: #fee2e2;
+            margin-top: 12px; display: inline-block; padding: 6px 10px; border-radius: 999px;
+            font-size: 12px; font-weight: 700; color: #ef4444; background: #fee2e2;
         }
-        .chart-card, .top-card, .table-card, .detail-card {
-            padding: 16px 16px 14px;
-        }
-        .card-title {
-            font-size: 17px;
-            font-weight: 800;
-            color: #0f172a;
-            margin-bottom: 10px;
-        }
+        .chart-card, .top-card, .table-card, .detail-card { padding: 16px 16px 14px; }
+        .card-title { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 10px; }
         .top-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            background: #edf3fb;
-            border-radius: 22px;
-            padding: 16px 18px;
-            margin-bottom: 14px;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            background: #edf3fb; border-radius: 22px; padding: 16px 18px; margin-bottom: 14px;
         }
         .rank-badge {
-            width: 38px;
-            height: 38px;
-            border-radius: 999px;
-            background: #0f172a;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 15px;
+            width: 38px; height: 38px; border-radius: 999px; background: #0f172a; color: white;
+            display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px;
             flex-shrink: 0;
         }
         .top-name {
-            font-weight: 800;
-            color: #0f172a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .count-badge {
-            border-radius: 999px;
-            padding: 7px 14px;
-            border: 1px solid #cbd5e1;
-            background: white;
-            font-size: 13px;
-            font-weight: 700;
-            color: #0f172a;
-            white-space: nowrap;
+            border-radius: 999px; padding: 7px 14px; border: 1px solid #cbd5e1; background: white;
+            font-size: 13px; font-weight: 700; color: #0f172a; white-space: nowrap;
         }
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px 18px;
+        .status-pill {
+            display: inline-block; white-space: nowrap; padding: 6px 12px; border-radius: 999px;
+            background: #0f172a; color: white; font-size: 12px; font-weight: 700;
         }
-        .detail-label {
-            font-size: 12px;
-            color: #64748b;
+        .brand-pill {
+            display: inline-block; white-space: nowrap; padding: 6px 12px; border-radius: 999px;
+            border: 1px solid #cbd5e1; background: white; font-size: 12px; font-weight: 700; color: #0f172a;
         }
-        .detail-value {
-            font-size: 14px;
-            color: #0f172a;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+        .cell-nowrap { white-space: nowrap; }
+        .detail-label { font-size: 12px; color: #64748b; }
+        .detail-value { font-size: 14px; color: #0f172a; font-weight: 700; margin-bottom: 8px; }
         .request-box {
-            margin-top: 14px;
-            background: #f8fafc;
-            border-radius: 18px;
-            padding: 16px;
-            color: #334155;
-            line-height: 1.7;
-            font-size: 14px;
-            white-space: pre-wrap;
+            margin-top: 14px; background: #f8fafc; border-radius: 18px; padding: 16px;
+            color: #334155; line-height: 1.7; font-size: 14px; white-space: pre-wrap;
         }
-        div[data-testid="stFileUploader"] > label,
         div[data-testid="stSelectbox"] > label,
-        div[data-testid="stTextInput"] > label {
-            font-weight: 700 !important;
-            color: #475569 !important;
-        }
-        div[data-testid="stFileUploader"] section {
-            padding: 0.35rem 0.6rem;
-            min-height: 54px;
-        }
-        div[data-testid="stFileUploader"] small {
-            font-size: 11px !important;
-        }
-        button[kind="secondary"], button[kind="primary"] {
-            border-radius: 999px !important;
-            min-height: 46px !important;
-            font-weight: 700 !important;
+        div[data-testid="stTextInput"] > label { font-weight: 700 !important; color: #475569 !important; }
+        div[data-testid="stButton"] > button {
+            border-radius: 999px !important; min-height: 46px !important; font-weight: 700 !important;
+            white-space: nowrap !important;
         }
         </style>
         """,
@@ -453,21 +342,13 @@ def sample_rows() -> list[dict]:
 
 
 def canonicalize_columns(columns: Iterable[str]) -> list[str]:
-    result = []
-    for col in columns:
-        key = str(col).strip().replace(" ", "").lower()
-        result.append(HEADER_MAP.get(key, str(col).strip()))
-    return result
+    return [HEADER_MAP.get(str(col).strip().replace(" ", "").lower(), str(col).strip()) for col in columns]
 
 
 def detect_header_row(frame: pd.DataFrame) -> int:
     for idx in range(min(len(frame), 10)):
         values = [str(v).strip() for v in frame.iloc[idx].tolist()]
-        hits = 0
-        for value in values:
-            key = value.replace(" ", "").lower()
-            if key in HEADER_MAP:
-                hits += 1
+        hits = sum(1 for value in values if value.replace(" ", "").lower() in HEADER_MAP)
         if hits >= 3:
             return idx
     return 0
@@ -490,23 +371,17 @@ def read_uploaded_frame(uploaded_file) -> pd.DataFrame:
         best_sheet = None
         best_score = -1
         best_header = 0
-
         for sheet in excel.sheet_names:
             preview = excel.parse(sheet_name=sheet, header=None, dtype=str)
             header_row = detect_header_row(preview)
             header_values = [str(v).strip() for v in preview.iloc[header_row].tolist()]
-            score = 0
-            for value in header_values:
-                if value.replace(" ", "").lower() in HEADER_MAP:
-                    score += 1
+            score = sum(1 for value in header_values if value.replace(" ", "").lower() in HEADER_MAP)
             if score > best_score:
                 best_score = score
                 best_sheet = sheet
                 best_header = header_row
-
         if best_sheet is None or best_score < 3:
             raise ValueError("반영할 행을 찾지 못했습니다. 헤더와 데이터 형식을 확인해 주세요.")
-
         return excel.parse(sheet_name=best_sheet, header=best_header)
 
     raise ValueError("지원하지 않는 파일 형식입니다. CSV, XLS, XLSX만 가능합니다.")
@@ -515,22 +390,17 @@ def read_uploaded_frame(uploaded_file) -> pd.DataFrame:
 def frame_to_rows(frame: pd.DataFrame) -> list[dict]:
     clean = frame.copy()
     clean.columns = canonicalize_columns(clean.columns)
-    clean = clean.dropna(how="all")
-    clean = clean.fillna("")
-
+    clean = clean.dropna(how="all").fillna("")
     if "date" not in clean.columns:
         raise ValueError("반영할 행을 찾지 못했습니다. 헤더와 데이터 형식을 확인해 주세요.")
 
     rows = []
     for idx, record in enumerate(clean.to_dict(orient="records")):
-        date = str(record.get("date") or "").strip()
-        if not date:
+        if not str(record.get("date") or "").strip():
             continue
         rows.append(normalize_row(record, idx))
-
     if not rows:
         raise ValueError("반영할 데이터가 없습니다.")
-
     return rows
 
 
@@ -539,6 +409,8 @@ def ensure_state() -> None:
         st.session_state.rows = sample_rows()
     if "selected_claim" not in st.session_state:
         st.session_state.selected_claim = None
+    if "show_import" not in st.session_state:
+        st.session_state.show_import = False
 
 
 def filter_options(rows: list[dict], key: str) -> list[str]:
@@ -552,8 +424,7 @@ def top_n(rows: list[dict], key: str, limit: int) -> pd.DataFrame:
         if not name:
             continue
         counts[name] = counts.get(name, 0) + 1
-    ordered = sorted(counts.items(), key=lambda item: item[1], reverse=True)[:limit]
-    return pd.DataFrame(ordered, columns=["name", "value"])
+    return pd.DataFrame(sorted(counts.items(), key=lambda item: item[1], reverse=True)[:limit], columns=["name", "value"])
 
 
 def render_kpi(title: str, value: str, desc: str, trend: str | None = None) -> None:
@@ -585,12 +456,23 @@ def request_text(row: dict) -> str:
     )
 
 
-def show_detail(row: dict) -> None:
-    st.markdown('<div class="detail-card">', unsafe_allow_html=True)
-    st.markdown("### 클레임 상세 관리")
+@st.dialog("엑셀 데이터 반영")
+def import_dialog() -> None:
+    uploaded = st.file_uploader("CSV / XLS / XLSX 파일 선택", type=["csv", "xls", "xlsx"])
+    if uploaded is not None:
+        try:
+            st.session_state.rows = frame_to_rows(read_uploaded_frame(uploaded))
+            st.session_state.selected_claim = None
+            st.session_state.show_import = False
+            st.rerun()
+        except Exception as exc:
+            st.error(str(exc))
+
+
+@st.dialog("클레임 상세 관리")
+def detail_dialog(row: dict) -> None:
     st.caption(f"{row['claimNo']} / {row['brand']} / {row['date']}")
     left, right = st.columns(2)
-
     with left:
         for label, value in [
             ("브랜드", row["brand"]),
@@ -601,7 +483,6 @@ def show_detail(row: dict) -> None:
             ("품명", row["product"]),
         ]:
             st.markdown(f'<div class="detail-label">{label}</div><div class="detail-value">{value}</div>', unsafe_allow_html=True)
-
     with right:
         for label, value in [
             ("수량", f"{row['qty']} EA"),
@@ -612,16 +493,21 @@ def show_detail(row: dict) -> None:
             ("PPM", str(row["ppm"])),
         ]:
             st.markdown(f'<div class="detail-label">{label}</div><div class="detail-value">{value}</div>', unsafe_allow_html=True)
-
     st.markdown(f'<div class="request-box">{request_text(row)}</div>', unsafe_allow_html=True)
-    if st.button("상세창 닫기", key="close_detail"):
+    if st.button("닫기", key=f"close_{row['claimNo']}"):
         st.session_state.selected_claim = None
         st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 inject_style()
 ensure_state()
+
+if st.session_state.show_import:
+    import_dialog()
+
+if st.session_state.selected_claim:
+    detail_dialog(st.session_state.selected_claim)
+
 rows = st.session_state.rows
 
 st.markdown(
@@ -648,14 +534,9 @@ with head_right:
         st.session_state.rows = sample_rows()
         st.session_state.selected_claim = None
         st.rerun()
-    uploaded_file = c.file_uploader("엑셀 데이터 넣기", type=["csv", "xls", "xlsx"], label_visibility="collapsed")
-    if uploaded_file is not None:
-        try:
-            st.session_state.rows = frame_to_rows(read_uploaded_frame(uploaded_file))
-            st.session_state.selected_claim = None
-            st.rerun()
-        except Exception as exc:
-            st.error(str(exc))
+    if c.button("엑셀 데이터 넣기", use_container_width=True, type="primary"):
+        st.session_state.show_import = True
+        st.rerun()
 
 f1, f2, f3, f4, f5, f6 = st.columns(6)
 brand = f1.selectbox("브랜드", filter_options(rows, "brand"))
@@ -674,17 +555,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 filtered = []
 query = search.strip().lower()
 for row in rows:
-    haystack = " ".join(
-        [
-            row["claimNo"],
-            row["customer"],
-            row["product"],
-            row["model"],
-            row["detail"],
-            row["cause"],
-            row["memo"],
-        ]
-    ).lower()
+    haystack = " ".join([row["claimNo"], row["customer"], row["product"], row["model"], row["detail"], row["cause"], row["memo"]]).lower()
     if brand != ALL and row["brand"] != brand:
         continue
     if major != ALL and row["major"] != major:
@@ -735,11 +606,7 @@ with k5:
 monthly = pd.DataFrame(filtered)
 if monthly.empty:
     monthly = pd.DataFrame(columns=["month", "claimNo"])
-monthly_trend = (
-    monthly.groupby("month", as_index=False)
-    .agg(count=("claimNo", "count"))
-    .sort_values("month")
-)
+monthly_trend = monthly.groupby("month", as_index=False).agg(count=("claimNo", "count")).sort_values("month")
 major_pie = top_n(filtered, "major", 6)
 cause_top = top_n(filtered, "cause", 6)
 brand_top = top_n(filtered, "brand", 6)
@@ -780,11 +647,7 @@ with c2:
             .mark_arc(innerRadius=50, outerRadius=100)
             .encode(
                 theta=alt.Theta("value:Q"),
-                color=alt.Color(
-                    "name:N",
-                    legend=alt.Legend(title="구분", orient="right"),
-                    scale=alt.Scale(range=["#2f64df", "#f59e0b", "#10b981", "#ef4444"]),
-                ),
+                color=alt.Color("name:N", scale=alt.Scale(range=["#2f64df", "#f59e0b", "#10b981", "#ef4444"]), legend=alt.Legend(title="구분", orient="right")),
                 tooltip=[
                     alt.Tooltip("name:N", title="구분"),
                     alt.Tooltip("value:Q", title="건수"),
@@ -796,30 +659,37 @@ with c2:
         st.altair_chart(donut, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-b1, b2, b3 = st.columns(3)
-for column, title, frame, color in [
-    (b1, "원인별 현황", cause_top, "#2563eb"),
-    (b2, "브랜드별 현황", brand_top, "#f59e0b"),
-    (b3, "유형별 현황", type_top, "#2f64df"),
-]:
-    with column:
-        st.markdown(f'<div class="chart-card"><div class="card-title">{title}</div>', unsafe_allow_html=True)
-        if frame.empty:
-            st.info("표시할 데이터가 없습니다.")
-        else:
-            bar = (
-                alt.Chart(frame)
-                .mark_bar(cornerRadiusTopLeft=8, cornerRadiusTopRight=8, color=color)
-                .encode(
-                    x=alt.X("name:N", title="", sort=None),
-                    y=alt.Y("value:Q", title="", axis=alt.Axis(tickMinStep=1)),
-                    tooltip=[alt.Tooltip("name:N", title="구분"), alt.Tooltip("value:Q", title="건수")],
-                )
-                .properties(height=250)
+
+def render_bar_chart(title: str, frame: pd.DataFrame, key_prefix: str) -> None:
+    st.markdown(f'<div class="chart-card"><div class="card-title">{title}</div>', unsafe_allow_html=True)
+    if frame.empty:
+        st.info("표시할 데이터가 없습니다.")
+    else:
+        color_frame = frame.copy()
+        color_frame["color"] = [BAR_COLORS[idx % len(BAR_COLORS)] for idx in range(len(color_frame))]
+        bar = (
+            alt.Chart(color_frame)
+            .mark_bar(cornerRadiusTopLeft=8, cornerRadiusTopRight=8)
+            .encode(
+                x=alt.X("name:N", title="", sort=None),
+                y=alt.Y("value:Q", title="", axis=alt.Axis(tickMinStep=1)),
+                color=alt.Color("name:N", scale=alt.Scale(domain=color_frame["name"].tolist(), range=color_frame["color"].tolist()), legend=None),
+                tooltip=[alt.Tooltip("name:N", title="구분"), alt.Tooltip("value:Q", title="건수")],
             )
-            label = bar.mark_text(dy=-8, color="#334155").encode(text=alt.Text("value:Q", format=".0f"))
-            st.altair_chart(bar + label, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+            .properties(height=250)
+        )
+        label = bar.mark_text(dy=-8, color="#334155").encode(text=alt.Text("value:Q", format=".0f"))
+        st.altair_chart(bar + label, use_container_width=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+b1, b2, b3 = st.columns(3)
+with b1:
+    render_bar_chart("원인별 현황", cause_top, "cause")
+with b2:
+    render_bar_chart("브랜드별 현황", brand_top, "brand")
+with b3:
+    render_bar_chart("유형별 현황", type_top, "type")
 
 t1, t2 = st.columns([0.65, 2.35])
 with t1:
@@ -847,27 +717,25 @@ with t2:
     if recent_df.empty:
         st.info("표시할 데이터가 없습니다.")
     else:
-        headers = st.columns([1.0, 0.9, 1.6, 1.2, 1.1, 1.0, 0.8, 0.8, 0.9, 0.7, 1.0])
-        for col, label in zip(headers, ["일자", "브랜드", "접수번호", "구분", "하자상세", "원인", "담당자", "상태", "비용", "PPM", "동작"]):
+        headers = st.columns([1.0, 0.9, 1.7, 1.3, 1.2, 1.0, 0.8, 0.8, 0.9, 0.6, 1.15])
+        labels = ["일자", "브랜드", "접수번호", "구분", "하자상세", "원인", "담당자", "상태", "비용", "PPM", "동작"]
+        for col, label in zip(headers, labels):
             col.markdown(f"**{label}**")
         st.divider()
         for _, row in recent_df.iterrows():
-            cols = st.columns([1.0, 0.9, 1.6, 1.2, 1.1, 1.0, 0.8, 0.8, 0.9, 0.7, 1.0])
-            cols[0].write(str(row["date"]))
-            cols[1].write(str(row["brand"]))
-            cols[2].write(f"**{row['claimNo']}**")
-            cols[3].write(f"{row['major']} / {row['mid']}")
-            cols[4].write(str(row["detail"]))
-            cols[5].write(str(row["cause"]))
-            cols[6].write(str(row["assignee"]))
-            cols[7].write(str(row["status"]))
-            cols[8].write(f"{fmt(row['cost'])}원")
-            cols[9].write(str(row["ppm"]))
-            if cols[10].button("상세조회", key=f"detail_{row['claimNo']}"):
+            cols = st.columns([1.0, 0.9, 1.7, 1.3, 1.2, 1.0, 0.8, 0.8, 0.9, 0.6, 1.15])
+            cols[0].markdown(f"<div class='cell-nowrap'>{row['date']}</div>", unsafe_allow_html=True)
+            cols[1].markdown(f"<span class='brand-pill'>{row['brand']}</span>", unsafe_allow_html=True)
+            cols[2].markdown(f"<div class='cell-nowrap'><b>{row['claimNo']}</b></div>", unsafe_allow_html=True)
+            cols[3].markdown(f"<div>{row['major']} / {row['mid']}</div>", unsafe_allow_html=True)
+            cols[4].markdown(f"<div class='cell-nowrap'>{row['detail']}</div>", unsafe_allow_html=True)
+            cols[5].markdown(f"<div class='cell-nowrap'>{row['cause']}</div>", unsafe_allow_html=True)
+            cols[6].markdown(f"<div class='cell-nowrap'>{row['assignee']}</div>", unsafe_allow_html=True)
+            cols[7].markdown(f"<span class='status-pill'>{row['status']}</span>", unsafe_allow_html=True)
+            cols[8].markdown(f"<div class='cell-nowrap'>{fmt(row['cost'])}원</div>", unsafe_allow_html=True)
+            cols[9].markdown(f"<div class='cell-nowrap'>{row['ppm']}</div>", unsafe_allow_html=True)
+            if cols[10].button("상세조회", key=f"detail_{row['claimNo']}", use_container_width=True):
                 st.session_state.selected_claim = row.to_dict()
                 st.rerun()
             st.divider()
     st.markdown("</div>", unsafe_allow_html=True)
-
-if st.session_state.selected_claim:
-    show_detail(st.session_state.selected_claim)
