@@ -60,7 +60,6 @@ HEADER_MAP = {
     "완료예정일": "dueDate",
     "memo": "memo",
     "메모": "memo",
-    "조치내용": "memo",
     "requestdetail": "requestDetail",
     "요청내용": "requestDetail",
 }
@@ -86,15 +85,32 @@ def inject_style() -> None:
         .block-container { max-width: 1480px; padding-top: 0.7rem; padding-bottom: 2rem; }
         .hero-card {
             background: linear-gradient(135deg, #172033 0%, #243246 60%, #35465f 100%);
-            border-radius: 26px; padding: 26px 30px; color: white;
-            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16); margin-bottom: 1rem;
+            border-radius: 26px;
+            padding: 26px 30px;
+            color: white;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+            margin-bottom: 1rem;
         }
         .hero-pill {
-            display: inline-block; padding: 7px 12px; border-radius: 999px;
-            background: rgba(255,255,255,0.12); font-size: 12px; font-weight: 700;
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            font-size: 12px;
+            font-weight: 700;
         }
-        .hero-title { font-size: 28px; font-weight: 800; margin: 14px 0 8px; letter-spacing: -0.02em; }
-        .hero-desc { color: #dbe6f5; font-size: 14px; line-height: 1.6; margin: 0; }
+        .hero-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 14px 0 8px;
+            letter-spacing: -0.02em;
+        }
+        .hero-desc {
+            color: #dbe6f5;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
         div[data-testid="stVerticalBlockBorderWrapper"] {
             background: #ffffff;
             border-radius: 22px;
@@ -113,28 +129,105 @@ def inject_style() -> None:
         div[data-testid="stMetricDelta"] { font-size: 11px; }
         div[data-testid="stSelectbox"] > label,
         div[data-testid="stTextInput"] > label {
-            font-weight: 700 !important; color: #475569 !important; font-size: 11px !important;
+            font-weight: 700 !important;
+            color: #475569 !important;
+            font-size: 11px !important;
         }
         div[data-testid="stSelectbox"] > div > div,
         div[data-testid="stTextInput"] input {
-            min-height: 42px !important; border-radius: 13px !important; font-size: 13px !important; background: #ffffff !important;
+            min-height: 42px !important;
+            border-radius: 13px !important;
+            font-size: 13px !important;
+            background: #ffffff !important;
         }
         div[data-baseweb="select"] > div { background: #ffffff !important; }
         div[data-testid="stButton"] > button {
-            border-radius: 999px !important; min-height: 40px !important; font-weight: 700 !important; white-space: nowrap !important; font-size: 12px !important;
+            border-radius: 999px !important;
+            min-height: 40px !important;
+            font-weight: 700 !important;
+            white-space: nowrap !important;
+            font-size: 12px !important;
         }
-        button[kind="primary"] { background: #0f172a !important; border-color: #0f172a !important; }
+        button[kind="primary"] {
+            background: #0f172a !important;
+            border-color: #0f172a !important;
+        }
         .section-title { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 3px; }
         .section-desc { font-size: 12px; color: #64748b; margin-bottom: 10px; }
-        .brand-pill { display:inline-block; white-space:nowrap; padding:5px 10px; border-radius:999px; border:1px solid #cbd5e1; background:white; font-size:12px; font-weight:700; color:#0f172a; }
-        .status-pill { display:inline-block; white-space:nowrap; padding:5px 10px; border-radius:999px; background:#0f172a; color:white; font-size:12px; font-weight:700; }
-        .top-item { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#edf3fb; border-radius:18px; padding:12px 14px; margin-bottom:10px; }
-        .rank-badge { width:30px; height:30px; border-radius:999px; background:#0f172a; color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0; }
-        .top-name { font-weight:800; color:#0f172a; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .count-badge { border-radius:999px; padding:5px 11px; border:1px solid #cbd5e1; background:white; font-size:11px; font-weight:700; color:#0f172a; white-space:nowrap; }
+        .brand-pill {
+            display: inline-block;
+            white-space: nowrap;
+            padding: 5px 10px;
+            border-radius: 999px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 12px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .status-pill {
+            display: inline-block;
+            white-space: nowrap;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #0f172a;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .top-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: #edf3fb;
+            border-radius: 18px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+        .rank-badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .top-name {
+            font-weight: 800;
+            color: #0f172a;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .count-badge {
+            border-radius: 999px;
+            padding: 5px 11px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 11px;
+            font-weight: 700;
+            color: #0f172a;
+            white-space: nowrap;
+        }
         .detail-label { font-size: 12px; color: #64748b; }
         .detail-value { font-size: 14px; color: #0f172a; font-weight: 700; margin-bottom: 8px; }
-        .request-box { margin-top:14px; background:#f8fafc; border-radius:18px; padding:16px; color:#334155; line-height:1.7; font-size:14px; white-space:pre-wrap; }
+        .request-box {
+            margin-top: 14px;
+            background: #f8fafc;
+            border-radius: 18px;
+            padding: 16px;
+            color: #334155;
+            line-height: 1.7;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -156,6 +249,7 @@ def normalize_row(row: dict, idx: int = 0) -> dict:
         "mid": str(row.get("mid") or ""),
         "detail": str(row.get("detail") or ""),
         "cause": str(row.get("cause") or ""),
+        "packaging": str(row.get("packaging") or row.get("actionDept") or ""),
         "customer": str(row.get("customer") or ""),
         "product": str(row.get("product") or ""),
         "model": str(row.get("model") or ""),
@@ -232,7 +326,6 @@ def read_formatted_xls_rows(uploaded_file) -> list[dict]:
             site_class = "충주"
 
         special_flag = "이의제기" if detail_xf.background.pattern_colour_index == 13 else ""
-
         memo_parts = []
         if site_class:
             memo_parts.append(f"분류:{site_class}")
@@ -254,6 +347,7 @@ def read_formatted_xls_rows(uploaded_file) -> list[dict]:
             "mid": str(values[10]).strip(),
             "detail": str(values[11]).strip(),
             "cause": str(values[13]).strip(),
+            "packaging": str(values[14]).strip(),
             "customer": "",
             "product": "",
             "model": str(values[4]).strip(),
@@ -354,6 +448,25 @@ def top_n(rows: list[dict], key: str, limit: int) -> pd.DataFrame:
     return pd.DataFrame(sorted(counts.items(), key=lambda item: item[1], reverse=True)[:limit], columns=["name", "value"])
 
 
+def parse_selected_name(event, selection_name: str = "point") -> str | None:
+    if not event or not getattr(event, "selection", None):
+        return None
+    selection = event.selection
+    data = selection.get(selection_name) if isinstance(selection, dict) else None
+    if not data:
+        return None
+    if isinstance(data, list) and data:
+        point = data[0]
+        if isinstance(point, dict):
+            return point.get("name")
+    if isinstance(data, dict):
+        value = data.get("name")
+        if isinstance(value, list):
+            return value[0] if value else None
+        return value
+    return None
+
+
 def request_text(row: dict) -> str:
     if row.get("requestDetail"):
         prefix = []
@@ -364,9 +477,7 @@ def request_text(row: dict) -> str:
         if row.get("specialFlag"):
             prefix.append(f"특이표시: {row['specialFlag']}")
         header = "\n".join(prefix)
-        if header:
-            return f"{header}\n\n{row['requestDetail']}"
-        return str(row["requestDetail"])
+        return f"{header}\n\n{row['requestDetail']}" if header else str(row["requestDetail"])
     return (
         f"제{row['qty']}원 시공팀 {row['customer']} 시공건으로, {row['detail']}이 발생한 건입니다. "
         f"({row['brand']} {row['model']} {row['product']})\n\n"
@@ -401,17 +512,18 @@ def detail_dialog(row: dict) -> None:
     with left:
         for label, value in [
             ("브랜드", row["brand"]),
-            ("모델", row["model"]),
+            ("제품코드", row["model"]),
             ("유형", row["type"]),
-            ("구분", f"{row['major']} / {row['mid']}"),
+            ("세부유형", row["mid"]),
             ("주차", row.get("weekLabel", "")),
             ("분류", row.get("siteClass", "")),
             ("원인", row["cause"]),
-            ("품명", row["product"]),
+            ("포장", row.get("packaging", "")),
         ]:
             st.markdown(f'<div class="detail-label">{label}</div><div class="detail-value">{value}</div>', unsafe_allow_html=True)
     with right:
         for label, value in [
+            ("품명", row["product"]),
             ("수량", f"{row['qty']} EA"),
             ("완료예정일", row["dueDate"]),
             ("담당자", row["assignee"]),
@@ -425,6 +537,31 @@ def detail_dialog(row: dict) -> None:
     if st.button("닫기", key=f"close_{row['claimNo']}"):
         st.session_state.selected_claim = None
         st.rerun()
+
+
+@st.dialog("그래프 상세 목록")
+def chart_detail_dialog(title: str, rows: list[dict]) -> None:
+    st.markdown(f"### {title}")
+    if not rows:
+        st.info("표시할 데이터가 없습니다.")
+        return
+    frame = pd.DataFrame(rows).sort_values("date", ascending=False)
+    headers = st.columns([1.0, 0.8, 1.4, 1.0, 1.0, 1.0, 0.9])
+    for col, label in zip(headers, ["일자", "브랜드", "접수번호", "유형", "세부유형", "하자상세", "동작"]):
+        col.markdown(f"**{label}**")
+    st.divider()
+    for _, row in frame.iterrows():
+        cols = st.columns([1.0, 0.8, 1.4, 1.0, 1.0, 1.0, 0.9])
+        cols[0].write(row["date"])
+        cols[1].write(row["brand"])
+        cols[2].write(row["claimNo"])
+        cols[3].write(row["type"])
+        cols[4].write(row["mid"])
+        cols[5].write(row["detail"])
+        if cols[6].button("상세조회", key=f"dialog_detail_{title}_{row['claimNo']}"):
+            st.session_state.selected_claim = row.to_dict()
+            st.rerun()
+        st.divider()
 
 
 def render_top_list(frame: pd.DataFrame) -> None:
@@ -446,9 +583,13 @@ def render_top_list(frame: pd.DataFrame) -> None:
         )
 
 
-def render_bar_chart(frame: pd.DataFrame, height: int = 210) -> alt.Chart:
+def build_selectable_bar_chart(frame: pd.DataFrame, title: str, key: str, event_key: str) -> str | None:
+    if frame.empty:
+        st.info("표시할 데이터가 없습니다.")
+        return None
     color_frame = frame.copy()
     color_frame["color"] = [BAR_COLORS[idx % len(BAR_COLORS)] for idx in range(len(color_frame))]
+    selection = alt.selection_point(fields=["name"], on="click", name="point")
     bar = (
         alt.Chart(color_frame)
         .mark_bar(cornerRadiusTopLeft=8, cornerRadiusTopRight=8)
@@ -456,16 +597,24 @@ def render_bar_chart(frame: pd.DataFrame, height: int = 210) -> alt.Chart:
             x=alt.X("name:N", title="", sort=None, axis=alt.Axis(labelAngle=0, labelLimit=140, labelFontSize=12)),
             y=alt.Y("value:Q", title="", axis=alt.Axis(tickMinStep=1)),
             color=alt.Color("name:N", scale=alt.Scale(domain=color_frame["name"].tolist(), range=color_frame["color"].tolist()), legend=None),
-            tooltip=[alt.Tooltip("name:N", title="구분"), alt.Tooltip("value:Q", title="건수")],
+            opacity=alt.condition(selection, alt.value(1), alt.value(0.88)),
+            tooltip=[alt.Tooltip("name:N", title=title), alt.Tooltip("value:Q", title="건수")],
         )
-        .properties(height=height)
+        .add_params(selection)
+        .properties(height=210)
     )
     label = bar.mark_text(dy=-8, color="#334155", fontSize=12).encode(text=alt.Text("value:Q", format=".0f"))
-    return bar + label
+    event = st.altair_chart(bar + label, use_container_width=True, on_select="rerun", selection_mode="point", key=event_key)
+    return parse_selected_name(event)
 
 
 inject_style()
-ensure_state()
+if "rows" not in st.session_state:
+    st.session_state.rows = sample_rows()
+if "selected_claim" not in st.session_state:
+    st.session_state.selected_claim = None
+if "show_import" not in st.session_state:
+    st.session_state.show_import = False
 
 if st.session_state.show_import:
     import_dialog()
@@ -513,7 +662,7 @@ with st.container(border=True):
     f7, f8, f9 = st.columns([1.05, 1.05, 2.65])
     month = f7.selectbox("월", filter_options(rows, "month"))
     day = f8.selectbox("일", filter_options(rows, "day"))
-    search = f9.text_input("검색", placeholder="접수번호, 모델, 하자상세, 고객명 검색")
+    search = f9.text_input("검색", placeholder="접수번호, 제품코드, 하자상세, 고객명 검색")
 
 filtered = []
 query = search.strip().lower()
@@ -526,6 +675,7 @@ for row in rows:
             row["model"],
             row["detail"],
             row["cause"],
+            row.get("packaging", ""),
             row["memo"],
             row.get("weekLabel", ""),
             row.get("siteClass", ""),
@@ -631,27 +781,37 @@ with c2:
             st.altair_chart(donut, use_container_width=True)
 
 b1, b2, b3 = st.columns(3)
+selected_chart_name = None
+selected_chart_rows: list[dict] = []
+selected_chart_title = ""
+
 with b1:
     with st.container(border=True):
         st.markdown("#### 원인별 현황")
-        if cause_top.empty:
-            st.info("표시할 데이터가 없습니다.")
-        else:
-            st.altair_chart(render_bar_chart(cause_top), use_container_width=True)
+        selected = build_selectable_bar_chart(cause_top, "원인", "cause", "cause_chart")
+        if selected:
+            selected_chart_name = selected
+            selected_chart_rows = [row for row in filtered if row["cause"] == selected]
+            selected_chart_title = f"원인별 상세 - {selected}"
 with b2:
     with st.container(border=True):
         st.markdown("#### 브랜드별 현황")
-        if brand_top.empty:
-            st.info("표시할 데이터가 없습니다.")
-        else:
-            st.altair_chart(render_bar_chart(brand_top), use_container_width=True)
+        selected = build_selectable_bar_chart(brand_top, "브랜드", "brand", "brand_chart")
+        if selected:
+            selected_chart_name = selected
+            selected_chart_rows = [row for row in filtered if row["brand"] == selected]
+            selected_chart_title = f"브랜드별 상세 - {selected}"
 with b3:
     with st.container(border=True):
         st.markdown("#### 유형별 현황")
-        if type_top.empty:
-            st.info("표시할 데이터가 없습니다.")
-        else:
-            st.altair_chart(render_bar_chart(type_top), use_container_width=True)
+        selected = build_selectable_bar_chart(type_top, "유형", "type", "type_chart")
+        if selected:
+            selected_chart_name = selected
+            selected_chart_rows = [row for row in filtered if row["type"] == selected]
+            selected_chart_title = f"유형별 상세 - {selected}"
+
+if selected_chart_name:
+    chart_detail_dialog(selected_chart_title, selected_chart_rows)
 
 t1, t2 = st.columns([0.72, 2.48])
 with t1:
@@ -665,9 +825,9 @@ with t2:
         if recent_df.empty:
             st.info("표시할 데이터가 없습니다.")
         else:
-            widths = [1.0, 0.82, 1.75, 1.2, 1.05, 1.0, 0.78, 0.82, 0.9, 0.55, 0.95]
+            widths = [0.95, 0.82, 1.55, 1.15, 1.1, 0.95, 0.95, 0.78, 0.82, 0.9, 0.55, 0.95]
             headers = st.columns(widths)
-            labels = ["일자", "브랜드", "접수번호", "구분", "하자상세", "원인", "담당자", "상태", "비용", "PPM", "동작"]
+            labels = ["일자", "브랜드", "접수번호", "유형/세부유형", "하자상세", "원인", "포장", "담당자", "상태", "비용", "PPM", "동작"]
             for col, label in zip(headers, labels):
                 col.markdown(f"<div style='font-size:13px;font-weight:800;color:#475569'>{label}</div>", unsafe_allow_html=True)
             st.divider()
@@ -676,14 +836,15 @@ with t2:
                 cols[0].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['date']}</div>", unsafe_allow_html=True)
                 cols[1].markdown(f"<span class='brand-pill'>{row['brand']}</span>", unsafe_allow_html=True)
                 cols[2].markdown(f"<div style='font-size:13px;white-space:nowrap;font-weight:800'>{row['claimNo']}</div>", unsafe_allow_html=True)
-                cols[3].markdown(f"<div style='font-size:13px'>{row['major']} / {row['mid']}</div>", unsafe_allow_html=True)
-                cols[4].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['detail']}</div>", unsafe_allow_html=True)
+                cols[3].markdown(f"<div style='font-size:13px'>{row['type']} / {row['mid']}</div>", unsafe_allow_html=True)
+                cols[4].markdown(f"<div style='font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>{row['detail']}</div>", unsafe_allow_html=True)
                 cols[5].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['cause']}</div>", unsafe_allow_html=True)
-                cols[6].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['assignee']}</div>", unsafe_allow_html=True)
-                cols[7].markdown(f"<span class='status-pill'>{row['status']}</span>", unsafe_allow_html=True)
-                cols[8].markdown(f"<div style='font-size:13px;white-space:nowrap'>{fmt(row['cost'])}원</div>", unsafe_allow_html=True)
-                cols[9].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['ppm']}</div>", unsafe_allow_html=True)
-                if cols[10].button("상세조회", key=f"detail_{row['claimNo']}", use_container_width=True):
+                cols[6].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row.get('packaging', '')}</div>", unsafe_allow_html=True)
+                cols[7].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['assignee']}</div>", unsafe_allow_html=True)
+                cols[8].markdown(f"<span class='status-pill'>{row['status']}</span>", unsafe_allow_html=True)
+                cols[9].markdown(f"<div style='font-size:13px;white-space:nowrap'>{fmt(row['cost'])}원</div>", unsafe_allow_html=True)
+                cols[10].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['ppm']}</div>", unsafe_allow_html=True)
+                if cols[11].button("상세조회", key=f"detail_{row['claimNo']}", use_container_width=True):
                     st.session_state.selected_claim = row.to_dict()
                     st.rerun()
                 st.divider()
