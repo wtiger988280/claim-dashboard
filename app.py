@@ -6,6 +6,7 @@ from typing import Iterable
 import altair as alt
 import pandas as pd
 import streamlit as st
+import xlrd
 
 
 st.set_page_config(page_title="고객클레임 현황 관리 대시보드", layout="wide")
@@ -22,31 +23,24 @@ HEADER_MAP = {
     "반납일자": "date",
     "brand": "brand",
     "브랜드": "brand",
-    "제조지": "brand",
     "claimno": "claimNo",
     "접수번호": "claimNo",
-    "클레임번호": "claimNo",
     "type": "type",
     "유형": "type",
     "형태": "type",
     "major": "major",
     "구분(대)": "major",
-    "구분대": "major",
     "구분": "major",
     "mid": "mid",
     "구분(중)": "mid",
-    "구분중": "mid",
     "세부유": "mid",
     "세부유형": "mid",
     "detail": "detail",
     "하자상세": "detail",
-    "상세": "detail",
     "cause": "cause",
     "원인": "cause",
-    "로트": "cause",
     "customer": "customer",
     "고객명": "customer",
-    "현장명": "customer",
     "product": "product",
     "품명": "product",
     "부품명": "product",
@@ -92,32 +86,15 @@ def inject_style() -> None:
         .block-container { max-width: 1480px; padding-top: 0.7rem; padding-bottom: 2rem; }
         .hero-card {
             background: linear-gradient(135deg, #172033 0%, #243246 60%, #35465f 100%);
-            border-radius: 26px;
-            padding: 26px 30px;
-            color: white;
-            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
-            margin-bottom: 1rem;
+            border-radius: 26px; padding: 26px 30px; color: white;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16); margin-bottom: 1rem;
         }
         .hero-pill {
-            display: inline-block;
-            padding: 7px 12px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.12);
-            font-size: 12px;
-            font-weight: 700;
+            display: inline-block; padding: 7px 12px; border-radius: 999px;
+            background: rgba(255,255,255,0.12); font-size: 12px; font-weight: 700;
         }
-        .hero-title {
-            font-size: 28px;
-            font-weight: 800;
-            margin: 14px 0 8px;
-            letter-spacing: -0.02em;
-        }
-        .hero-desc {
-            color: #dbe6f5;
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 0;
-        }
+        .hero-title { font-size: 28px; font-weight: 800; margin: 14px 0 8px; letter-spacing: -0.02em; }
+        .hero-desc { color: #dbe6f5; font-size: 14px; line-height: 1.6; margin: 0; }
         div[data-testid="stVerticalBlockBorderWrapper"] {
             background: #ffffff;
             border-radius: 22px;
@@ -136,121 +113,28 @@ def inject_style() -> None:
         div[data-testid="stMetricDelta"] { font-size: 11px; }
         div[data-testid="stSelectbox"] > label,
         div[data-testid="stTextInput"] > label {
-            font-weight: 700 !important;
-            color: #475569 !important;
-            font-size: 11px !important;
+            font-weight: 700 !important; color: #475569 !important; font-size: 11px !important;
         }
         div[data-testid="stSelectbox"] > div > div,
         div[data-testid="stTextInput"] input {
-            min-height: 42px !important;
-            border-radius: 13px !important;
-            font-size: 13px !important;
-            background: #ffffff !important;
+            min-height: 42px !important; border-radius: 13px !important; font-size: 13px !important; background: #ffffff !important;
         }
-        div[data-baseweb="select"] > div {
-            background: #ffffff !important;
-        }
-        div[data-testid="stTextInput"] input::placeholder {
-            color: #94a3b8 !important;
-        }
+        div[data-baseweb="select"] > div { background: #ffffff !important; }
         div[data-testid="stButton"] > button {
-            border-radius: 999px !important;
-            min-height: 40px !important;
-            font-weight: 700 !important;
-            white-space: nowrap !important;
-            font-size: 12px !important;
-            padding-left: 0.7rem !important;
-            padding-right: 0.7rem !important;
+            border-radius: 999px !important; min-height: 40px !important; font-weight: 700 !important; white-space: nowrap !important; font-size: 12px !important;
         }
-        button[kind="primary"] {
-            background: #0f172a !important;
-            border-color: #0f172a !important;
-        }
-        .section-title {
-            font-size: 17px;
-            font-weight: 800;
-            color: #0f172a;
-            margin-bottom: 3px;
-        }
-        .section-desc {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 10px;
-        }
-        .brand-pill {
-            display: inline-block;
-            white-space: nowrap;
-            padding: 5px 10px;
-            border-radius: 999px;
-            border: 1px solid #cbd5e1;
-            background: white;
-            font-size: 12px;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .status-pill {
-            display: inline-block;
-            white-space: nowrap;
-            padding: 5px 10px;
-            border-radius: 999px;
-            background: #0f172a;
-            color: white;
-            font-size: 12px;
-            font-weight: 700;
-        }
-        .top-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            background: #edf3fb;
-            border-radius: 18px;
-            padding: 12px 14px;
-            margin-bottom: 10px;
-        }
-        .rank-badge {
-            width: 30px;
-            height: 30px;
-            border-radius: 999px;
-            background: #0f172a;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 13px;
-            flex-shrink: 0;
-        }
-        .top-name {
-            font-weight: 800;
-            color: #0f172a;
-            font-size: 13px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .count-badge {
-            border-radius: 999px;
-            padding: 5px 11px;
-            border: 1px solid #cbd5e1;
-            background: white;
-            font-size: 11px;
-            font-weight: 700;
-            color: #0f172a;
-            white-space: nowrap;
-        }
+        button[kind="primary"] { background: #0f172a !important; border-color: #0f172a !important; }
+        .section-title { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 3px; }
+        .section-desc { font-size: 12px; color: #64748b; margin-bottom: 10px; }
+        .brand-pill { display:inline-block; white-space:nowrap; padding:5px 10px; border-radius:999px; border:1px solid #cbd5e1; background:white; font-size:12px; font-weight:700; color:#0f172a; }
+        .status-pill { display:inline-block; white-space:nowrap; padding:5px 10px; border-radius:999px; background:#0f172a; color:white; font-size:12px; font-weight:700; }
+        .top-item { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#edf3fb; border-radius:18px; padding:12px 14px; margin-bottom:10px; }
+        .rank-badge { width:30px; height:30px; border-radius:999px; background:#0f172a; color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0; }
+        .top-name { font-weight:800; color:#0f172a; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .count-badge { border-radius:999px; padding:5px 11px; border:1px solid #cbd5e1; background:white; font-size:11px; font-weight:700; color:#0f172a; white-space:nowrap; }
         .detail-label { font-size: 12px; color: #64748b; }
         .detail-value { font-size: 14px; color: #0f172a; font-weight: 700; margin-bottom: 8px; }
-        .request-box {
-            margin-top: 14px;
-            background: #f8fafc;
-            border-radius: 18px;
-            padding: 16px;
-            color: #334155;
-            line-height: 1.7;
-            font-size: 14px;
-            white-space: pre-wrap;
-        }
+        .request-box { margin-top:14px; background:#f8fafc; border-radius:18px; padding:16px; color:#334155; line-height:1.7; font-size:14px; white-space:pre-wrap; }
         </style>
         """,
         unsafe_allow_html=True,
@@ -282,6 +166,9 @@ def normalize_row(row: dict, idx: int = 0) -> dict:
         "dueDate": str(row.get("dueDate") or ""),
         "memo": str(row.get("memo") or ""),
         "requestDetail": str(row.get("requestDetail") or ""),
+        "weekLabel": str(row.get("weekLabel") or ""),
+        "siteClass": str(row.get("siteClass") or ""),
+        "specialFlag": str(row.get("specialFlag") or ""),
         "status": str(row.get("status") or STATUS[idx % len(STATUS)]),
         "assignee": str(row.get("assignee") or ASSIGNEES[idx % len(ASSIGNEES)]),
     }
@@ -306,6 +193,86 @@ def detect_header_row(frame: pd.DataFrame) -> int:
         if hits >= 3:
             return idx
     return 0
+
+
+def excel_serial_to_date(value) -> str:
+    if value in ("", None):
+        return ""
+    try:
+        if isinstance(value, (int, float)):
+            dt = xlrd.xldate.xldate_as_datetime(value, 0)
+            return dt.strftime("%Y-%m-%d")
+    except Exception:
+        pass
+    return str(value).strip()
+
+
+def read_formatted_xls_rows(uploaded_file) -> list[dict]:
+    raw = uploaded_file.getvalue()
+    book = xlrd.open_workbook(file_contents=raw, formatting_info=True)
+    sheet = book.sheet_by_index(0)
+    rows: list[dict] = []
+
+    for r in range(2, sheet.nrows):
+        values = sheet.row_values(r)
+        if not any(str(v).strip() for v in values):
+            continue
+
+        base_xf = book.xf_list[sheet.cell_xf_index(r, 0)]
+        base_font = book.font_list[base_xf.font_index]
+        detail_xf = book.xf_list[sheet.cell_xf_index(r, 11)]
+
+        week_label = str(values[15]).strip() if len(values) > 15 else ""
+        site_class = ""
+        if base_font.colour_index == 62:
+            site_class = "VN"
+        elif base_font.colour_index == 10:
+            site_class = "미회수"
+        elif week_label == "3주":
+            site_class = "충주"
+
+        special_flag = "이의제기" if detail_xf.background.pattern_colour_index == 13 else ""
+
+        memo_parts = []
+        if site_class:
+            memo_parts.append(f"분류:{site_class}")
+        if special_flag:
+            memo_parts.append(f"특이표시:{special_flag}")
+        if str(values[6]).strip():
+            memo_parts.append(str(values[6]).strip())
+
+        request_detail = str(values[7]).strip()
+        if special_flag and request_detail:
+            request_detail = f"[{special_flag}] {request_detail}"
+
+        row = {
+            "date": excel_serial_to_date(values[0]),
+            "brand": str(values[1]).strip(),
+            "claimNo": str(values[2]).strip(),
+            "type": str(values[3]).strip(),
+            "major": str(values[9]).strip(),
+            "mid": str(values[10]).strip(),
+            "detail": str(values[11]).strip(),
+            "cause": str(values[13]).strip(),
+            "customer": "",
+            "product": "",
+            "model": str(values[4]).strip(),
+            "actionDept": str(values[14]).strip(),
+            "qty": 1,
+            "cost": 0,
+            "ppm": 0,
+            "dueDate": "",
+            "memo": " / ".join([part for part in memo_parts if part]),
+            "requestDetail": request_detail,
+            "weekLabel": week_label,
+            "siteClass": site_class,
+            "specialFlag": special_flag,
+        }
+        rows.append(normalize_row(row, len(rows)))
+
+    if not rows:
+        raise ValueError("반영할 데이터가 없습니다.")
+    return rows
 
 
 def read_uploaded_frame(uploaded_file) -> pd.DataFrame:
@@ -357,6 +324,13 @@ def frame_to_rows(frame: pd.DataFrame) -> list[dict]:
     return rows
 
 
+def read_uploaded_rows(uploaded_file) -> list[dict]:
+    suffix = uploaded_file.name.lower().split(".")[-1]
+    if suffix == "xls":
+        return read_formatted_xls_rows(uploaded_file)
+    return frame_to_rows(read_uploaded_frame(uploaded_file))
+
+
 def ensure_state() -> None:
     if "rows" not in st.session_state:
         st.session_state.rows = sample_rows()
@@ -382,13 +356,26 @@ def top_n(rows: list[dict], key: str, limit: int) -> pd.DataFrame:
 
 def request_text(row: dict) -> str:
     if row.get("requestDetail"):
+        prefix = []
+        if row.get("weekLabel"):
+            prefix.append(f"주차: {row['weekLabel']}")
+        if row.get("siteClass"):
+            prefix.append(f"분류: {row['siteClass']}")
+        if row.get("specialFlag"):
+            prefix.append(f"특이표시: {row['specialFlag']}")
+        header = "\n".join(prefix)
+        if header:
+            return f"{header}\n\n{row['requestDetail']}"
         return str(row["requestDetail"])
     return (
         f"제{row['qty']}원 시공팀 {row['customer']} 시공건으로, {row['detail']}이 발생한 건입니다. "
         f"({row['brand']} {row['model']} {row['product']})\n\n"
         f"1) 수주건명 : {row['customer']}\n"
         f"2) 접수번호 : {row['claimNo']}\n"
-        f"3) 시공일자 : {row['date']}\n\n"
+        f"3) 시공일자 : {row['date']}\n"
+        f"주차 : {row.get('weekLabel', '')}\n"
+        f"분류 : {row.get('siteClass', '')}\n"
+        f"특이표시 : {row.get('specialFlag', '')}\n\n"
         f"원인 : {row['cause']} / 담당부서 : {row['actionDept']}\n"
         f"조치내용 : {row['memo']}"
     )
@@ -399,7 +386,7 @@ def import_dialog() -> None:
     uploaded = st.file_uploader("CSV / XLS / XLSX 파일 선택", type=["csv", "xls", "xlsx"])
     if uploaded is not None:
         try:
-            st.session_state.rows = frame_to_rows(read_uploaded_frame(uploaded))
+            st.session_state.rows = read_uploaded_rows(uploaded)
             st.session_state.selected_claim = None
             st.session_state.show_import = False
             st.rerun()
@@ -417,6 +404,8 @@ def detail_dialog(row: dict) -> None:
             ("모델", row["model"]),
             ("유형", row["type"]),
             ("구분", f"{row['major']} / {row['mid']}"),
+            ("주차", row.get("weekLabel", "")),
+            ("분류", row.get("siteClass", "")),
             ("원인", row["cause"]),
             ("품명", row["product"]),
         ]:
@@ -427,6 +416,7 @@ def detail_dialog(row: dict) -> None:
             ("완료예정일", row["dueDate"]),
             ("담당자", row["assignee"]),
             ("처리상태", row["status"]),
+            ("특이표시", row.get("specialFlag", "")),
             ("처리비용", f"{fmt(row['cost'])}원"),
             ("PPM", str(row["ppm"])),
         ]:
@@ -528,7 +518,20 @@ with st.container(border=True):
 filtered = []
 query = search.strip().lower()
 for row in rows:
-    haystack = " ".join([row["claimNo"], row["customer"], row["product"], row["model"], row["detail"], row["cause"], row["memo"]]).lower()
+    haystack = " ".join(
+        [
+            row["claimNo"],
+            row["customer"],
+            row["product"],
+            row["model"],
+            row["detail"],
+            row["cause"],
+            row["memo"],
+            row.get("weekLabel", ""),
+            row.get("siteClass", ""),
+            row.get("specialFlag", ""),
+        ]
+    ).lower()
     if brand != ALL and row["brand"] != brand:
         continue
     if major != ALL and row["major"] != major:
@@ -662,7 +665,7 @@ with t2:
         if recent_df.empty:
             st.info("표시할 데이터가 없습니다.")
         else:
-            widths = [1.0, 0.82, 1.75, 1.2, 1.05, 1.0, 0.78, 0.82, 0.9, 0.55, 1.05]
+            widths = [1.0, 0.82, 1.75, 1.2, 1.05, 1.0, 0.78, 0.82, 0.9, 0.55, 0.95]
             headers = st.columns(widths)
             labels = ["일자", "브랜드", "접수번호", "구분", "하자상세", "원인", "담당자", "상태", "비용", "PPM", "동작"]
             for col, label in zip(headers, labels):
