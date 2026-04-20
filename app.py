@@ -513,7 +513,8 @@ def detail_dialog(row: dict) -> None:
         for label, value in [
             ("브랜드", row["brand"]),
             ("제품코드", row["model"]),
-            ("유형", row["type"]),
+            ("형태", row["type"]),
+            ("유형", row["major"]),
             ("세부유형", row["mid"]),
             ("주차", row.get("weekLabel", "")),
             ("분류", row.get("siteClass", "")),
@@ -546,18 +547,18 @@ def chart_detail_dialog(title: str, rows: list[dict]) -> None:
         st.info("표시할 데이터가 없습니다.")
         return
     frame = pd.DataFrame(rows).sort_values("date", ascending=False)
-    headers = st.columns([1.0, 0.8, 1.4, 1.0, 1.0, 1.0, 0.9])
-    for col, label in zip(headers, ["일자", "브랜드", "접수번호", "유형", "세부유형", "하자상세", "동작"]):
+    headers = st.columns([1.0, 0.8, 1.4, 0.9, 1.0, 1.0, 1.0])
+    for col, label in zip(headers, ["일자", "브랜드", "접수번호", "형태", "유형", "세부유형", "동작"]):
         col.markdown(f"**{label}**")
     st.divider()
     for _, row in frame.iterrows():
-        cols = st.columns([1.0, 0.8, 1.4, 1.0, 1.0, 1.0, 0.9])
+        cols = st.columns([1.0, 0.8, 1.4, 0.9, 1.0, 1.0, 1.0])
         cols[0].write(row["date"])
         cols[1].write(row["brand"])
         cols[2].write(row["claimNo"])
         cols[3].write(row["type"])
-        cols[4].write(row["mid"])
-        cols[5].write(row["detail"])
+        cols[4].write(row["major"])
+        cols[5].write(row["mid"])
         if cols[6].button("상세조회", key=f"dialog_detail_{title}_{row['claimNo']}"):
             st.session_state.selected_claim = row.to_dict()
             st.rerun()
@@ -825,9 +826,9 @@ with t2:
         if recent_df.empty:
             st.info("표시할 데이터가 없습니다.")
         else:
-            widths = [0.95, 0.82, 1.55, 1.15, 1.1, 0.95, 0.95, 0.78, 0.82, 0.9, 0.55, 0.95]
+            widths = [0.9, 0.78, 1.52, 0.88, 1.34, 1.95, 0.95, 0.92, 0.78, 0.82, 0.9, 0.52, 0.98]
             headers = st.columns(widths)
-            labels = ["일자", "브랜드", "접수번호", "유형/세부유형", "하자상세", "원인", "포장", "담당자", "상태", "비용", "PPM", "동작"]
+            labels = ["일자", "브랜드", "접수번호", "형태", "유형/세부유형", "하자상세", "원인", "포장", "담당자", "상태", "비용", "PPM", "동작"]
             for col, label in zip(headers, labels):
                 col.markdown(f"<div style='font-size:13px;font-weight:800;color:#475569'>{label}</div>", unsafe_allow_html=True)
             st.divider()
@@ -836,15 +837,16 @@ with t2:
                 cols[0].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['date']}</div>", unsafe_allow_html=True)
                 cols[1].markdown(f"<span class='brand-pill'>{row['brand']}</span>", unsafe_allow_html=True)
                 cols[2].markdown(f"<div style='font-size:13px;white-space:nowrap;font-weight:800'>{row['claimNo']}</div>", unsafe_allow_html=True)
-                cols[3].markdown(f"<div style='font-size:13px'>{row['type']} / {row['mid']}</div>", unsafe_allow_html=True)
-                cols[4].markdown(f"<div style='font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>{row['detail']}</div>", unsafe_allow_html=True)
-                cols[5].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['cause']}</div>", unsafe_allow_html=True)
-                cols[6].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row.get('packaging', '')}</div>", unsafe_allow_html=True)
-                cols[7].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['assignee']}</div>", unsafe_allow_html=True)
-                cols[8].markdown(f"<span class='status-pill'>{row['status']}</span>", unsafe_allow_html=True)
-                cols[9].markdown(f"<div style='font-size:13px;white-space:nowrap'>{fmt(row['cost'])}원</div>", unsafe_allow_html=True)
-                cols[10].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['ppm']}</div>", unsafe_allow_html=True)
-                if cols[11].button("상세조회", key=f"detail_{row['claimNo']}", use_container_width=True):
+                cols[3].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['type']}</div>", unsafe_allow_html=True)
+                cols[4].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['major']} / {row['mid']}</div>", unsafe_allow_html=True)
+                cols[5].markdown(f"<div style='font-size:11px;white-space:nowrap;overflow:hidden'>{row['detail']}</div>", unsafe_allow_html=True)
+                cols[6].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['cause']}</div>", unsafe_allow_html=True)
+                cols[7].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row.get('packaging', '')}</div>", unsafe_allow_html=True)
+                cols[8].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['assignee']}</div>", unsafe_allow_html=True)
+                cols[9].markdown(f"<span class='status-pill'>{row['status']}</span>", unsafe_allow_html=True)
+                cols[10].markdown(f"<div style='font-size:11px;white-space:nowrap'>{fmt(row['cost'])}원</div>", unsafe_allow_html=True)
+                cols[11].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['ppm']}</div>", unsafe_allow_html=True)
+                if cols[12].button("상세조회", key=f"detail_{row['claimNo']}", use_container_width=True):
                     st.session_state.selected_claim = row.to_dict()
                     st.rerun()
                 st.divider()
