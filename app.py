@@ -13,27 +13,62 @@ st.set_page_config(page_title="고객클레임 현황 관리 대시보드", layo
 ALL = "전체"
 STATUS = ["접수", "분석중", "조치중", "완료", "보류"]
 ASSIGNEES = ["미배정", "김대리", "이과장", "박차장", "최부장"]
-BAR_COLORS = ["#3565e0", "#f7a30a", "#1fb784", "#ef4444", "#8257e6", "#21acc7", "#84cc16", "#f97316"]
+BAR_COLORS = ["#3565E0", "#F7A30A", "#1FB784", "#EF4444", "#8257E6", "#21ACC7", "#84CC16", "#F97316"]
 
 HEADER_MAP = {
-    "date": "date", "일자": "date", "등록일": "date", "반납일자": "date",
-    "brand": "brand", "브랜드": "brand", "제조지": "brand",
-    "claimno": "claimNo", "접수번호": "claimNo", "클레임번호": "claimNo",
-    "type": "type", "유형": "type", "형태": "type",
-    "major": "major", "구분(대)": "major", "구분대": "major", "구분": "major",
-    "mid": "mid", "구분(중)": "mid", "구분중": "mid", "세부유": "mid", "세부유형": "mid",
-    "detail": "detail", "하자상세": "detail", "상세": "detail",
-    "cause": "cause", "원인": "cause", "로트": "cause",
-    "customer": "customer", "고객명": "customer", "현장명": "customer",
-    "product": "product", "품명": "product", "부품명": "product",
-    "model": "model", "모델": "model", "제품코드": "model",
-    "actiondept": "actionDept", "담당부서": "actionDept", "조치부서": "actionDept",
-    "qty": "qty", "수량": "qty",
-    "cost": "cost", "비용": "cost", "금액": "cost",
+    "date": "date",
+    "일자": "date",
+    "등록일": "date",
+    "반납일자": "date",
+    "brand": "brand",
+    "브랜드": "brand",
+    "제조지": "brand",
+    "claimno": "claimNo",
+    "접수번호": "claimNo",
+    "클레임번호": "claimNo",
+    "type": "type",
+    "유형": "type",
+    "형태": "type",
+    "major": "major",
+    "구분(대)": "major",
+    "구분대": "major",
+    "구분": "major",
+    "mid": "mid",
+    "구분(중)": "mid",
+    "구분중": "mid",
+    "세부유": "mid",
+    "세부유형": "mid",
+    "detail": "detail",
+    "하자상세": "detail",
+    "상세": "detail",
+    "cause": "cause",
+    "원인": "cause",
+    "로트": "cause",
+    "customer": "customer",
+    "고객명": "customer",
+    "현장명": "customer",
+    "product": "product",
+    "품명": "product",
+    "부품명": "product",
+    "model": "model",
+    "모델": "model",
+    "제품코드": "model",
+    "actiondept": "actionDept",
+    "담당부서": "actionDept",
+    "조치부서": "actionDept",
+    "qty": "qty",
+    "수량": "qty",
+    "cost": "cost",
+    "비용": "cost",
+    "금액": "cost",
     "ppm": "ppm",
-    "duedate": "dueDate", "완료예정일": "dueDate",
-    "memo": "memo", "메모": "memo", "조치내용": "memo",
-    "requestdetail": "requestDetail", "요청내용": "requestDetail",
+    "duedate": "dueDate",
+    "완료예정일": "dueDate",
+    "memo": "memo",
+    "메모": "memo",
+    "조치내용": "memo",
+    "requestdetail": "requestDetail",
+    "요청내용": "requestDetail",
 }
 
 SAMPLE_RAW = [
@@ -54,33 +89,51 @@ def inject_style() -> None:
         <style>
         #MainMenu, header, footer { visibility: hidden; height: 0; }
         .stApp { background: linear-gradient(180deg, #f8fbff 0%, #eef4fc 100%); }
-        .block-container { max-width: 1480px; padding-top: 0.5rem; padding-bottom: 2rem; }
+        .block-container { max-width: 1480px; padding-top: 0.7rem; padding-bottom: 2rem; }
+        .hero-card {
+            background: linear-gradient(135deg, #172033 0%, #243246 60%, #35465f 100%);
+            border-radius: 26px;
+            padding: 26px 30px;
+            color: white;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+            margin-bottom: 1rem;
+        }
+        .hero-pill {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .hero-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 14px 0 8px;
+            letter-spacing: -0.02em;
+        }
+        .hero-desc {
+            color: #dbe6f5;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
         div[data-testid="stVerticalBlockBorderWrapper"] {
             background: #ffffff;
             border-radius: 22px;
             border: none !important;
             box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
-            padding: 0.2rem 0.2rem 0.35rem 0.2rem;
+            padding: 0.45rem 0.55rem 0.55rem 0.55rem;
         }
         div[data-testid="stMetric"] {
             background: white;
             border-radius: 22px;
             box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
-            padding: 0.75rem 0.9rem;
+            padding: 0.8rem 0.95rem;
         }
-        div[data-testid="stMetricLabel"] {
-            color: #64748b;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        div[data-testid="stMetricValue"] {
-            color: #0f172a;
-            font-size: 20px;
-            font-weight: 800;
-        }
-        div[data-testid="stMetricDelta"] {
-            font-size: 11px;
-        }
+        div[data-testid="stMetricLabel"] { color: #64748b; font-size: 12px; font-weight: 600; }
+        div[data-testid="stMetricValue"] { color: #0f172a; font-size: 20px; font-weight: 800; }
+        div[data-testid="stMetricDelta"] { font-size: 11px; }
         div[data-testid="stSelectbox"] > label,
         div[data-testid="stTextInput"] > label {
             font-weight: 700 !important;
@@ -89,9 +142,16 @@ def inject_style() -> None:
         }
         div[data-testid="stSelectbox"] > div > div,
         div[data-testid="stTextInput"] input {
-            min-height: 40px !important;
+            min-height: 42px !important;
             border-radius: 13px !important;
             font-size: 13px !important;
+            background: #ffffff !important;
+        }
+        div[data-baseweb="select"] > div {
+            background: #ffffff !important;
+        }
+        div[data-testid="stTextInput"] input::placeholder {
+            color: #94a3b8 !important;
         }
         div[data-testid="stButton"] > button {
             border-radius: 999px !important;
@@ -118,11 +178,11 @@ def inject_style() -> None:
         .brand-pill {
             display: inline-block;
             white-space: nowrap;
-            padding: 5px 9px;
+            padding: 5px 10px;
             border-radius: 999px;
             border: 1px solid #cbd5e1;
             background: white;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             color: #0f172a;
         }
@@ -133,7 +193,7 @@ def inject_style() -> None:
             border-radius: 999px;
             background: #0f172a;
             color: white;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
         }
         .top-item {
@@ -401,14 +461,14 @@ def render_bar_chart(frame: pd.DataFrame, height: int = 210) -> alt.Chart:
         alt.Chart(color_frame)
         .mark_bar(cornerRadiusTopLeft=8, cornerRadiusTopRight=8)
         .encode(
-            x=alt.X("name:N", title="", sort=None, axis=alt.Axis(labelAngle=0, labelLimit=120)),
+            x=alt.X("name:N", title="", sort=None, axis=alt.Axis(labelAngle=0, labelLimit=140, labelFontSize=12)),
             y=alt.Y("value:Q", title="", axis=alt.Axis(tickMinStep=1)),
             color=alt.Color("name:N", scale=alt.Scale(domain=color_frame["name"].tolist(), range=color_frame["color"].tolist()), legend=None),
             tooltip=[alt.Tooltip("name:N", title="구분"), alt.Tooltip("value:Q", title="건수")],
         )
         .properties(height=height)
     )
-    label = bar.mark_text(dy=-8, color="#334155").encode(text=alt.Text("value:Q", format=".0f"))
+    label = bar.mark_text(dy=-8, color="#334155", fontSize=12).encode(text=alt.Text("value:Q", format=".0f"))
     return bar + label
 
 
@@ -421,6 +481,17 @@ if st.session_state.selected_claim:
     detail_dialog(st.session_state.selected_claim)
 
 rows = st.session_state.rows
+
+st.markdown(
+    """
+    <div class="hero-card">
+        <div class="hero-pill">품질보증팀 고객클레임 관리</div>
+        <div class="hero-title">고객클레임 현황 관리 대시보드</div>
+        <p class="hero-desc">고객 클레임 접수, 원인, 처리상태, 비용, PPM을 한눈에 관리할 수 있도록 구성한 화면입니다.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 with st.container(border=True):
     top_left, top_right = st.columns([7, 6])
@@ -518,7 +589,7 @@ with c1:
         else:
             line = (
                 alt.Chart(monthly_trend)
-                .mark_line(point=alt.OverlayMarkDef(size=60, filled=True, color="#3565e0"), color="#3565e0", strokeWidth=2.8)
+                .mark_line(point=alt.OverlayMarkDef(size=60, filled=True, color="#3565E0"), color="#3565E0", strokeWidth=2.8)
                 .encode(
                     x=alt.X("month:N", title="", axis=alt.Axis(labelPadding=10)),
                     y=alt.Y("count:Q", title="", axis=alt.Axis(tickMinStep=1, gridDash=[2, 4])),
@@ -526,7 +597,7 @@ with c1:
                 )
                 .properties(height=250)
             )
-            labels = line.mark_text(dy=-10, color="#3565e0").encode(text="count:Q")
+            labels = line.mark_text(dy=-10, color="#3565E0", fontSize=12).encode(text="count:Q")
             st.altair_chart(line + labels, use_container_width=True)
 
 with c2:
@@ -543,7 +614,7 @@ with c2:
                 .mark_arc(innerRadius=38, outerRadius=82)
                 .encode(
                     theta=alt.Theta("value:Q"),
-                    color=alt.Color("name:N", scale=alt.Scale(range=["#3565e0", "#f7a30a", "#1fb784", "#ef4444"]), legend=alt.Legend(title="구분", orient="right")),
+                    color=alt.Color("name:N", scale=alt.Scale(range=["#3565E0", "#F7A30A", "#1FB784", "#EF4444"]), legend=alt.Legend(title="구분", orient="right")),
                     tooltip=[
                         alt.Tooltip("name:N", title="구분"),
                         alt.Tooltip("value:Q", title="건수"),
@@ -589,24 +660,24 @@ with t2:
         if recent_df.empty:
             st.info("표시할 데이터가 없습니다.")
         else:
-            widths = [1.0, 0.75, 1.65, 1.15, 1.0, 0.95, 0.72, 0.72, 0.78, 0.48, 0.88]
+            widths = [1.0, 0.82, 1.75, 1.2, 1.05, 1.0, 0.78, 0.82, 0.9, 0.55, 0.95]
             headers = st.columns(widths)
             labels = ["일자", "브랜드", "접수번호", "구분", "하자상세", "원인", "담당자", "상태", "비용", "PPM", "동작"]
             for col, label in zip(headers, labels):
-                col.markdown(f"<div style='font-size:11px;font-weight:800;color:#475569'>{label}</div>", unsafe_allow_html=True)
+                col.markdown(f"<div style='font-size:13px;font-weight:800;color:#475569'>{label}</div>", unsafe_allow_html=True)
             st.divider()
             for _, row in recent_df.iterrows():
                 cols = st.columns(widths)
-                cols[0].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['date']}</div>", unsafe_allow_html=True)
+                cols[0].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['date']}</div>", unsafe_allow_html=True)
                 cols[1].markdown(f"<span class='brand-pill'>{row['brand']}</span>", unsafe_allow_html=True)
-                cols[2].markdown(f"<div style='font-size:11px;white-space:nowrap;font-weight:800'>{row['claimNo']}</div>", unsafe_allow_html=True)
-                cols[3].markdown(f"<div style='font-size:11px'>{row['major']} / {row['mid']}</div>", unsafe_allow_html=True)
-                cols[4].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['detail']}</div>", unsafe_allow_html=True)
-                cols[5].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['cause']}</div>", unsafe_allow_html=True)
-                cols[6].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['assignee']}</div>", unsafe_allow_html=True)
+                cols[2].markdown(f"<div style='font-size:13px;white-space:nowrap;font-weight:800'>{row['claimNo']}</div>", unsafe_allow_html=True)
+                cols[3].markdown(f"<div style='font-size:13px'>{row['major']} / {row['mid']}</div>", unsafe_allow_html=True)
+                cols[4].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['detail']}</div>", unsafe_allow_html=True)
+                cols[5].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['cause']}</div>", unsafe_allow_html=True)
+                cols[6].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['assignee']}</div>", unsafe_allow_html=True)
                 cols[7].markdown(f"<span class='status-pill'>{row['status']}</span>", unsafe_allow_html=True)
-                cols[8].markdown(f"<div style='font-size:11px;white-space:nowrap'>{fmt(row['cost'])}원</div>", unsafe_allow_html=True)
-                cols[9].markdown(f"<div style='font-size:11px;white-space:nowrap'>{row['ppm']}</div>", unsafe_allow_html=True)
+                cols[8].markdown(f"<div style='font-size:13px;white-space:nowrap'>{fmt(row['cost'])}원</div>", unsafe_allow_html=True)
+                cols[9].markdown(f"<div style='font-size:13px;white-space:nowrap'>{row['ppm']}</div>", unsafe_allow_html=True)
                 if cols[10].button("상세조회", key=f"detail_{row['claimNo']}", use_container_width=True):
                     st.session_state.selected_claim = row.to_dict()
                     st.rerun()
