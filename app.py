@@ -159,6 +159,8 @@ def inject_style() -> None:
             font-weight: 700 !important;
             white-space: nowrap !important;
             font-size: 12px !important;
+            padding-left: 0.7rem !important;
+            padding-right: 0.7rem !important;
         }
         button[kind="primary"] {
             background: #0f172a !important;
@@ -660,7 +662,7 @@ with t2:
         if recent_df.empty:
             st.info("표시할 데이터가 없습니다.")
         else:
-            widths = [1.0, 0.82, 1.75, 1.2, 1.05, 1.0, 0.78, 0.82, 0.9, 0.55, 0.95]
+            widths = [1.0, 0.82, 1.75, 1.2, 1.05, 1.0, 0.78, 0.82, 0.9, 0.55, 1.05]
             headers = st.columns(widths)
             labels = ["일자", "브랜드", "접수번호", "구분", "하자상세", "원인", "담당자", "상태", "비용", "PPM", "동작"]
             for col, label in zip(headers, labels):
