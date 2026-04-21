@@ -147,15 +147,22 @@ def inject_style() -> None:
         div[data-testid="stButton"] > button {
             border-radius: 999px !important;
             min-height: 36px !important;
-            font-weight: 700 !important;
+            font-weight: 800 !important;
             white-space: nowrap !important;
             font-size: 11px !important;
             padding-left: 0.55rem !important;
             padding-right: 0.55rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
         }
         div[data-testid="stButton"] > button p {
             font-size: 11px !important;
+            font-weight: 800 !important;
             margin: 0 !important;
+            width: 100% !important;
+            text-align: center !important;
         }
         button[kind="primary"] {
             background: #0f172a !important;
