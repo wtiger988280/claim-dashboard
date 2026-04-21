@@ -547,19 +547,20 @@ def chart_detail_dialog(title: str, rows: list[dict]) -> None:
         st.info("표시할 데이터가 없습니다.")
         return
     frame = pd.DataFrame(rows).sort_values("date", ascending=False)
-    headers = st.columns([1.0, 0.8, 1.4, 0.9, 1.0, 1.0, 1.0])
+    widths = [1.05, 0.95, 1.75, 0.95, 0.95, 1.1, 1.05]
+    headers = st.columns(widths)
     for col, label in zip(headers, ["일자", "브랜드", "접수번호", "형태", "유형", "세부유형", "동작"]):
-        col.markdown(f"**{label}**")
+        col.markdown(f"<div style='font-size:13px;font-weight:800;color:#475569;white-space:nowrap'>{label}</div>", unsafe_allow_html=True)
     st.divider()
     for _, row in frame.iterrows():
-        cols = st.columns([1.0, 0.8, 1.4, 0.9, 1.0, 1.0, 1.0])
-        cols[0].write(row["date"])
-        cols[1].write(row["brand"])
-        cols[2].write(row["claimNo"])
-        cols[3].write(row["type"])
-        cols[4].write(row["major"])
-        cols[5].write(row["mid"])
-        if cols[6].button("상세조회", key=f"dialog_detail_{title}_{row['claimNo']}"):
+        cols = st.columns(widths)
+        cols[0].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['date']}</div>", unsafe_allow_html=True)
+        cols[1].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['brand']}</div>", unsafe_allow_html=True)
+        cols[2].markdown(f"<div style='font-size:12px;white-space:nowrap;font-weight:700'>{row['claimNo']}</div>", unsafe_allow_html=True)
+        cols[3].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['type']}</div>", unsafe_allow_html=True)
+        cols[4].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['major']}</div>", unsafe_allow_html=True)
+        cols[5].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['mid']}</div>", unsafe_allow_html=True)
+        if cols[6].button("상세조회", key=f"dialog_detail_{title}_{row['claimNo']}", use_container_width=True):
             st.session_state.selected_claim = row.to_dict()
             st.rerun()
         st.divider()
@@ -595,7 +596,7 @@ def build_selectable_bar_chart(frame: pd.DataFrame, title: str, key: str, event_
         alt.Chart(color_frame)
         .mark_bar(cornerRadiusTopLeft=8, cornerRadiusTopRight=8)
         .encode(
-            x=alt.X("name:N", title="", sort=None, axis=alt.Axis(labelAngle=0, labelLimit=140, labelFontSize=12)),
+            x=alt.X("name:N", title="", sort=None, axis=alt.Axis(labelAngle=-24, labelLimit=220, labelFontSize=11, labelOverlap=False)),
             y=alt.Y("value:Q", title="", axis=alt.Axis(tickMinStep=1)),
             color=alt.Color("name:N", scale=alt.Scale(domain=color_frame["name"].tolist(), range=color_frame["color"].tolist()), legend=None),
             opacity=alt.condition(selection, alt.value(1), alt.value(0.88)),
@@ -826,7 +827,7 @@ with t2:
         if recent_df.empty:
             st.info("표시할 데이터가 없습니다.")
         else:
-            widths = [0.9, 0.78, 1.52, 0.88, 1.34, 1.95, 0.95, 0.92, 0.78, 0.82, 0.9, 0.52, 0.98]
+            widths = [0.9, 0.78, 1.52, 0.88, 1.34, 1.95, 0.95, 0.92, 0.78, 0.82, 0.9, 0.52, 1.05]
             headers = st.columns(widths)
             labels = ["일자", "브랜드", "접수번호", "형태", "유형/세부유형", "하자상세", "원인", "포장", "담당자", "상태", "비용", "PPM", "동작"]
             for col, label in zip(headers, labels):
