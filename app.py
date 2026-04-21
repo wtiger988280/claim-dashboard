@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import io
+import json
+from pathlib import Path
 from typing import Iterable
 
 import altair as alt
@@ -15,6 +17,7 @@ ALL = "전체"
 STATUS = ["접수", "분석중", "조치중", "완료", "보류"]
 ASSIGNEES = ["미배정", "김대리", "이과장", "박차장", "최부장"]
 BAR_COLORS = ["#3565E0", "#F7A30A", "#1FB784", "#EF4444", "#8257E6", "#21ACC7", "#84CC16", "#F97316"]
+DATA_STORE = Path(__file__).with_name("dashboard_rows.json")
 
 HEADER_MAP = {
     "date": "date",
@@ -425,9 +428,25 @@ def read_uploaded_rows(uploaded_file) -> list[dict]:
     return frame_to_rows(read_uploaded_frame(uploaded_file))
 
 
+def save_rows(rows: list[dict]) -> None:
+    DATA_STORE.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def load_saved_rows() -> list[dict] | None:
+    if not DATA_STORE.exists():
+        return None
+    try:
+        raw = json.loads(DATA_STORE.read_text(encoding="utf-8"))
+        if not isinstance(raw, list):
+            return None
+        return [normalize_row(row, idx) for idx, row in enumerate(raw)]
+    except Exception:
+        return None
+
+
 def ensure_state() -> None:
     if "rows" not in st.session_state:
-        st.session_state.rows = sample_rows()
+        st.session_state.rows = load_saved_rows() or sample_rows()
     if "selected_claim" not in st.session_state:
         st.session_state.selected_claim = None
     if "show_import" not in st.session_state:
@@ -498,6 +517,7 @@ def import_dialog() -> None:
     if uploaded is not None:
         try:
             st.session_state.rows = read_uploaded_rows(uploaded)
+            save_rows(st.session_state.rows)
             st.session_state.selected_claim = None
             st.session_state.show_import = False
             st.rerun()
@@ -611,12 +631,7 @@ def build_selectable_bar_chart(frame: pd.DataFrame, title: str, key: str, event_
 
 
 inject_style()
-if "rows" not in st.session_state:
-    st.session_state.rows = sample_rows()
-if "selected_claim" not in st.session_state:
-    st.session_state.selected_claim = None
-if "show_import" not in st.session_state:
-    st.session_state.show_import = False
+ensure_state()
 
 if st.session_state.show_import:
     import_dialog()
@@ -647,6 +662,7 @@ with st.container(border=True):
             st.rerun()
         if b.button("샘플 복원", use_container_width=True):
             st.session_state.rows = sample_rows()
+            save_rows(st.session_state.rows)
             st.session_state.selected_claim = None
             st.rerun()
         if c.button("엑셀 데이터 넣기", use_container_width=True, type="primary"):
