@@ -150,6 +150,12 @@ def inject_style() -> None:
             font-weight: 700 !important;
             white-space: nowrap !important;
             font-size: 11px !important;
+            padding-left: 0.55rem !important;
+            padding-right: 0.55rem !important;
+        }
+        div[data-testid="stButton"] > button p {
+            font-size: 11px !important;
+            margin: 0 !important;
         }
         button[kind="primary"] {
             background: #0f172a !important;
@@ -455,6 +461,8 @@ def ensure_state() -> None:
         st.session_state.chart_detail_title = None
     if "chart_detail_rows" not in st.session_state:
         st.session_state.chart_detail_rows = []
+    if "chart_last_selected" not in st.session_state:
+        st.session_state.chart_last_selected = {"cause_chart": None, "brand_chart": None, "type_chart": None}
 
 
 def filter_options(rows: list[dict], key: str) -> list[str]:
@@ -572,29 +580,32 @@ def chart_detail_dialog(title: str, rows: list[dict]) -> None:
         if st.button("닫기", key="close_chart_detail_empty"):
             st.session_state.chart_detail_title = None
             st.session_state.chart_detail_rows = []
+            st.session_state.chart_last_selected = {"cause_chart": None, "brand_chart": None, "type_chart": None}
             st.rerun()
         return
     frame = pd.DataFrame(rows).sort_values("date", ascending=False)
-    widths = [1.05, 0.95, 1.75, 0.95, 0.95, 1.1, 1.05]
+    widths = [0.55, 1.0, 0.9, 1.65, 0.9, 0.9, 1.0, 1.0]
     headers = st.columns(widths)
-    for col, label in zip(headers, ["일자", "브랜드", "접수번호", "형태", "유형", "세부유형", "동작"]):
+    for col, label in zip(headers, ["번호", "일자", "브랜드", "접수번호", "형태", "유형", "세부유형", "동작"]):
         col.markdown(f"<div style='font-size:13px;font-weight:800;color:#475569;white-space:nowrap'>{label}</div>", unsafe_allow_html=True)
     st.divider()
-    for _, row in frame.iterrows():
+    for idx, (_, row) in enumerate(frame.iterrows(), start=1):
         cols = st.columns(widths)
-        cols[0].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['date']}</div>", unsafe_allow_html=True)
-        cols[1].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['brand']}</div>", unsafe_allow_html=True)
-        cols[2].markdown(f"<div style='font-size:12px;white-space:nowrap;font-weight:700'>{row['claimNo']}</div>", unsafe_allow_html=True)
-        cols[3].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['type']}</div>", unsafe_allow_html=True)
-        cols[4].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['major']}</div>", unsafe_allow_html=True)
-        cols[5].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['mid']}</div>", unsafe_allow_html=True)
-        if cols[6].button("상세조회", key=f"dialog_detail_{title}_{row['claimNo']}", use_container_width=True):
+        cols[0].markdown(f"<div style='font-size:12px;white-space:nowrap'>{idx}</div>", unsafe_allow_html=True)
+        cols[1].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['date']}</div>", unsafe_allow_html=True)
+        cols[2].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['brand']}</div>", unsafe_allow_html=True)
+        cols[3].markdown(f"<div style='font-size:12px;white-space:nowrap;font-weight:700'>{row['claimNo']}</div>", unsafe_allow_html=True)
+        cols[4].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['type']}</div>", unsafe_allow_html=True)
+        cols[5].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['major']}</div>", unsafe_allow_html=True)
+        cols[6].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['mid']}</div>", unsafe_allow_html=True)
+        if cols[7].button("상세조회", key=f"dialog_detail_{title}_{row['claimNo']}", use_container_width=True):
             st.session_state.selected_claim = row.to_dict()
             st.rerun()
         st.divider()
     if st.button("닫기", key=f"close_chart_detail_{title}"):
         st.session_state.chart_detail_title = None
         st.session_state.chart_detail_rows = []
+        st.session_state.chart_last_selected = {"cause_chart": None, "brand_chart": None, "type_chart": None}
         st.rerun()
 
 
@@ -811,27 +822,45 @@ with c2:
             st.altair_chart(donut, use_container_width=True)
 
 b1, b2, b3 = st.columns(3)
+cause_selected = None
+brand_selected = None
+type_selected = None
 with b1:
     with st.container(border=True):
         st.markdown("#### 원인별 현황")
-        selected = build_selectable_bar_chart(cause_top, "원인", "cause", "cause_chart")
-        if selected:
-            st.session_state.chart_detail_title = f"원인별 상세 - {selected}"
-            st.session_state.chart_detail_rows = [row for row in filtered if row["cause"] == selected]
+        cause_selected = build_selectable_bar_chart(cause_top, "원인", "cause", "cause_chart")
 with b2:
     with st.container(border=True):
         st.markdown("#### 브랜드별 현황")
-        selected = build_selectable_bar_chart(brand_top, "브랜드", "brand", "brand_chart")
-        if selected:
-            st.session_state.chart_detail_title = f"브랜드별 상세 - {selected}"
-            st.session_state.chart_detail_rows = [row for row in filtered if row["brand"] == selected]
+        brand_selected = build_selectable_bar_chart(brand_top, "브랜드", "brand", "brand_chart")
 with b3:
     with st.container(border=True):
         st.markdown("#### 유형별 현황")
-        selected = build_selectable_bar_chart(type_top, "유형", "type", "type_chart")
-        if selected:
-            st.session_state.chart_detail_title = f"유형별 상세 - {selected}"
-            st.session_state.chart_detail_rows = [row for row in filtered if row["type"] == selected]
+        type_selected = build_selectable_bar_chart(type_top, "유형", "type", "type_chart")
+
+current_chart_selection = {
+    "cause_chart": cause_selected,
+    "brand_chart": brand_selected,
+    "type_chart": type_selected,
+}
+previous_chart_selection = st.session_state.chart_last_selected
+changed_chart = None
+for chart_key, current_value in current_chart_selection.items():
+    previous_value = previous_chart_selection.get(chart_key)
+    if current_value is not None and current_value != previous_value:
+        changed_chart = chart_key
+
+st.session_state.chart_last_selected = current_chart_selection
+
+if changed_chart == "cause_chart" and cause_selected is not None:
+    st.session_state.chart_detail_title = f"원인별 상세 - {cause_selected}"
+    st.session_state.chart_detail_rows = [row for row in filtered if row["cause"] == cause_selected]
+elif changed_chart == "brand_chart" and brand_selected is not None:
+    st.session_state.chart_detail_title = f"브랜드별 상세 - {brand_selected}"
+    st.session_state.chart_detail_rows = [row for row in filtered if row["brand"] == brand_selected]
+elif changed_chart == "type_chart" and type_selected is not None:
+    st.session_state.chart_detail_title = f"유형별 상세 - {type_selected}"
+    st.session_state.chart_detail_rows = [row for row in filtered if row["type"] == type_selected]
 
 t1, t2 = st.columns([0.72, 2.48])
 with t1:
