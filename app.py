@@ -616,23 +616,30 @@ def chart_detail_dialog(title: str, rows: list[dict]) -> None:
         st.rerun()
 
 
-def render_top_list(frame: pd.DataFrame) -> None:
+def render_top_list(frame: pd.DataFrame, rows: list[dict]) -> None:
     if frame.empty:
         st.info("표시할 데이터가 없습니다.")
         return
     for idx, row in frame.reset_index(drop=True).iterrows():
-        st.markdown(
-            f"""
-            <div class="top-item">
-                <div style="display:flex;align-items:center;gap:12px;min-width:0;">
-                    <div class="rank-badge">{idx + 1}</div>
-                    <div class="top-name">{row["name"]}</div>
+        left, right = st.columns([3.1, 1.1])
+        with left:
+            st.markdown(
+                f"""
+                <div class="top-item" style="margin-bottom:0;">
+                    <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+                        <div class="rank-badge">{idx + 1}</div>
+                        <div class="top-name">{row["name"]}</div>
+                    </div>
                 </div>
-                <div class="count-badge">{int(row["value"])}건</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+                """,
+                unsafe_allow_html=True,
+            )
+        with right:
+            if st.button(f'{int(row["value"])}건', key=f'top_detail_{idx}_{row["name"]}', use_container_width=True):
+                st.session_state.chart_detail_title = f'하자상세 TOP 10 상세 - {row["name"]}'
+                st.session_state.chart_detail_rows = [item for item in rows if item["detail"] == row["name"]]
+                st.rerun()
+        st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
 
 def build_selectable_bar_chart(frame: pd.DataFrame, title: str, key: str, event_key: str) -> str | None:
@@ -873,7 +880,7 @@ t1, t2 = st.columns([0.72, 2.48])
 with t1:
     with st.container(border=True):
         st.markdown("#### 하자상세 TOP 10")
-        render_top_list(detail_top)
+        render_top_list(detail_top, filtered)
 
 with t2:
     with st.container(border=True):
