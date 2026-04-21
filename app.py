@@ -451,6 +451,10 @@ def ensure_state() -> None:
         st.session_state.selected_claim = None
     if "show_import" not in st.session_state:
         st.session_state.show_import = False
+    if "chart_detail_title" not in st.session_state:
+        st.session_state.chart_detail_title = None
+    if "chart_detail_rows" not in st.session_state:
+        st.session_state.chart_detail_rows = []
 
 
 def filter_options(rows: list[dict], key: str) -> list[str]:
@@ -565,6 +569,10 @@ def chart_detail_dialog(title: str, rows: list[dict]) -> None:
     st.markdown(f"### {title}")
     if not rows:
         st.info("표시할 데이터가 없습니다.")
+        if st.button("닫기", key="close_chart_detail_empty"):
+            st.session_state.chart_detail_title = None
+            st.session_state.chart_detail_rows = []
+            st.rerun()
         return
     frame = pd.DataFrame(rows).sort_values("date", ascending=False)
     widths = [1.05, 0.95, 1.75, 0.95, 0.95, 1.1, 1.05]
@@ -584,6 +592,10 @@ def chart_detail_dialog(title: str, rows: list[dict]) -> None:
             st.session_state.selected_claim = row.to_dict()
             st.rerun()
         st.divider()
+    if st.button("닫기", key=f"close_chart_detail_{title}"):
+        st.session_state.chart_detail_title = None
+        st.session_state.chart_detail_rows = []
+        st.rerun()
 
 
 def render_top_list(frame: pd.DataFrame) -> None:
@@ -799,37 +811,27 @@ with c2:
             st.altair_chart(donut, use_container_width=True)
 
 b1, b2, b3 = st.columns(3)
-selected_chart_name = None
-selected_chart_rows: list[dict] = []
-selected_chart_title = ""
-
 with b1:
     with st.container(border=True):
         st.markdown("#### 원인별 현황")
         selected = build_selectable_bar_chart(cause_top, "원인", "cause", "cause_chart")
         if selected:
-            selected_chart_name = selected
-            selected_chart_rows = [row for row in filtered if row["cause"] == selected]
-            selected_chart_title = f"원인별 상세 - {selected}"
+            st.session_state.chart_detail_title = f"원인별 상세 - {selected}"
+            st.session_state.chart_detail_rows = [row for row in filtered if row["cause"] == selected]
 with b2:
     with st.container(border=True):
         st.markdown("#### 브랜드별 현황")
         selected = build_selectable_bar_chart(brand_top, "브랜드", "brand", "brand_chart")
         if selected:
-            selected_chart_name = selected
-            selected_chart_rows = [row for row in filtered if row["brand"] == selected]
-            selected_chart_title = f"브랜드별 상세 - {selected}"
+            st.session_state.chart_detail_title = f"브랜드별 상세 - {selected}"
+            st.session_state.chart_detail_rows = [row for row in filtered if row["brand"] == selected]
 with b3:
     with st.container(border=True):
         st.markdown("#### 유형별 현황")
         selected = build_selectable_bar_chart(type_top, "유형", "type", "type_chart")
         if selected:
-            selected_chart_name = selected
-            selected_chart_rows = [row for row in filtered if row["type"] == selected]
-            selected_chart_title = f"유형별 상세 - {selected}"
-
-if selected_chart_name:
-    chart_detail_dialog(selected_chart_title, selected_chart_rows)
+            st.session_state.chart_detail_title = f"유형별 상세 - {selected}"
+            st.session_state.chart_detail_rows = [row for row in filtered if row["type"] == selected]
 
 t1, t2 = st.columns([0.72, 2.48])
 with t1:
@@ -867,3 +869,6 @@ with t2:
                     st.session_state.selected_claim = row.to_dict()
                     st.rerun()
                 st.divider()
+
+if st.session_state.chart_detail_title:
+    chart_detail_dialog(st.session_state.chart_detail_title, st.session_state.chart_detail_rows)
