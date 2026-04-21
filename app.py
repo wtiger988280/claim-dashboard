@@ -143,10 +143,10 @@ def inject_style() -> None:
         div[data-baseweb="select"] > div { background: #ffffff !important; }
         div[data-testid="stButton"] > button {
             border-radius: 999px !important;
-            min-height: 40px !important;
+            min-height: 36px !important;
             font-weight: 700 !important;
             white-space: nowrap !important;
-            font-size: 12px !important;
+            font-size: 11px !important;
         }
         button[kind="primary"] {
             background: #0f172a !important;
@@ -157,22 +157,22 @@ def inject_style() -> None:
         .brand-pill {
             display: inline-block;
             white-space: nowrap;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 999px;
             border: 1px solid #cbd5e1;
             background: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #0f172a;
         }
         .status-pill {
             display: inline-block;
             white-space: nowrap;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 999px;
             background: #0f172a;
             color: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
         }
         .top-item {
@@ -596,7 +596,7 @@ def build_selectable_bar_chart(frame: pd.DataFrame, title: str, key: str, event_
         alt.Chart(color_frame)
         .mark_bar(cornerRadiusTopLeft=8, cornerRadiusTopRight=8)
         .encode(
-            x=alt.X("name:N", title="", sort=None, axis=alt.Axis(labelAngle=-24, labelLimit=220, labelFontSize=11, labelOverlap=False)),
+            x=alt.X("name:N", title="", sort=None, axis=alt.Axis(labelAngle=0, labelLimit=260, labelFontSize=10, labelOverlap=False, labelPadding=8)),
             y=alt.Y("value:Q", title="", axis=alt.Axis(tickMinStep=1)),
             color=alt.Color("name:N", scale=alt.Scale(domain=color_frame["name"].tolist(), range=color_frame["color"].tolist()), legend=None),
             opacity=alt.condition(selection, alt.value(1), alt.value(0.88)),
@@ -827,11 +827,11 @@ with t2:
         if recent_df.empty:
             st.info("표시할 데이터가 없습니다.")
         else:
-            widths = [0.9, 0.78, 1.52, 0.88, 1.34, 1.95, 0.95, 0.92, 0.78, 0.82, 0.9, 0.52, 1.05]
+            widths = [0.88, 0.92, 1.5, 0.82, 1.28, 1.9, 0.9, 0.86, 0.74, 0.98, 0.82, 0.62, 1.08]
             headers = st.columns(widths)
             labels = ["일자", "브랜드", "접수번호", "형태", "유형/세부유형", "하자상세", "원인", "포장", "담당자", "상태", "비용", "PPM", "동작"]
             for col, label in zip(headers, labels):
-                col.markdown(f"<div style='font-size:13px;font-weight:800;color:#475569'>{label}</div>", unsafe_allow_html=True)
+                col.markdown(f"<div style='font-size:12px;font-weight:800;color:#475569;white-space:nowrap'>{label}</div>", unsafe_allow_html=True)
             st.divider()
             for _, row in recent_df.iterrows():
                 cols = st.columns(widths)
