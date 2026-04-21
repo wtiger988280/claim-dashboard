@@ -591,20 +591,20 @@ def chart_detail_dialog(title: str, rows: list[dict]) -> None:
             st.rerun()
         return
     frame = pd.DataFrame(rows).sort_values("date", ascending=False)
-    widths = [0.5, 1.02, 0.92, 1.92, 1.02, 0.9, 0.95, 1.12]
+    widths = [0.56, 1.22, 1.08, 2.18, 1.08, 0.98, 1.18, 1.42]
     headers = st.columns(widths)
     for col, label in zip(headers, ["번호", "일자", "브랜드", "접수번호", "형태", "유형", "세부유형", "동작"]):
         col.markdown(f"<div style='font-size:13px;font-weight:800;color:#475569;white-space:nowrap'>{label}</div>", unsafe_allow_html=True)
     st.divider()
     for idx, (_, row) in enumerate(frame.iterrows(), start=1):
         cols = st.columns(widths)
-        cols[0].markdown(f"<div style='font-size:12px;white-space:nowrap'>{idx}</div>", unsafe_allow_html=True)
-        cols[1].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['date']}</div>", unsafe_allow_html=True)
-        cols[2].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['brand']}</div>", unsafe_allow_html=True)
-        cols[3].markdown(f"<div style='font-size:12px;white-space:nowrap;font-weight:700;padding-right:10px'>{row['claimNo']}</div>", unsafe_allow_html=True)
-        cols[4].markdown(f"<div style='font-size:12px;white-space:nowrap;padding-left:6px'>{row['type']}</div>", unsafe_allow_html=True)
-        cols[5].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['major']}</div>", unsafe_allow_html=True)
-        cols[6].markdown(f"<div style='font-size:12px;white-space:nowrap'>{row['mid']}</div>", unsafe_allow_html=True)
+        cols[0].markdown(f"<div style='font-size:12px;white-space:nowrap;padding-right:10px'>{idx}</div>", unsafe_allow_html=True)
+        cols[1].markdown(f"<div style='font-size:12px;white-space:nowrap;padding-right:12px'>{row['date']}</div>", unsafe_allow_html=True)
+        cols[2].markdown(f"<div style='font-size:12px;white-space:nowrap;padding-right:14px'>{row['brand']}</div>", unsafe_allow_html=True)
+        cols[3].markdown(f"<div style='font-size:12px;white-space:nowrap;font-weight:700;padding-right:16px'>{row['claimNo']}</div>", unsafe_allow_html=True)
+        cols[4].markdown(f"<div style='font-size:12px;white-space:nowrap;padding-right:12px'>{row['type']}</div>", unsafe_allow_html=True)
+        cols[5].markdown(f"<div style='font-size:12px;white-space:nowrap;padding-right:12px'>{row['major']}</div>", unsafe_allow_html=True)
+        cols[6].markdown(f"<div style='font-size:12px;white-space:nowrap;padding-right:10px'>{row['mid']}</div>", unsafe_allow_html=True)
         if cols[7].button("상세조회", key=f"dialog_detail_{title}_{row['claimNo']}", use_container_width=True):
             st.session_state.selected_claim = row.to_dict()
             st.rerun()
